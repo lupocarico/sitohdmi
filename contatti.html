@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sanremo Water Polo - Contatti</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f0f8ff;
+      color: #333;
+    }
+
+    nav {
+      background-color: #001f3f;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      margin: 0;
+      padding: 10px 0;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #00bfff;
+    }
+
+    .hero-contact {
+      background-image: url('piscina_Sanremo.png');
+      background-size: cover;
+      background-position: center;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-shadow: 0 0 10px rgba(0,0,0,0.7);
+      text-align: center;
+      margin-top: 60px;
+    }
+
+    .hero-contact h1 {
+      font-size: 3em;
+      animation: fadeIn 1.5s ease-in-out;
+    }
+
+    .contact-section {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 20px;
+      animation: slideUp 1s ease-in-out;
+    }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .contact-info div {
+      font-size: 1.1em;
+    }
+
+    .map-container {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin-top: 30px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .map-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .map-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: 2;
+      background: rgba(255, 255, 255, 0);
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    .map-message {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.6);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.9em;
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    footer {
+      background-color: #001f3f;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 60px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="squadra.html">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <section class="hero-contact">
+    <h1>Contattaci</h1>
+  </section>
+
+  <section class="contact-section">
+    <div class="contact-info">
+      <div><strong>Email:</strong> info@sanremowp.it</div>
+      <div><strong>Telefono:</strong> 0184 991350</div>
+      <div><strong>Indirizzo:</strong> Piscina Comunale di Sanremo, Via Nostra Signora della Mercede, 18038 Sanremo (IM)</div>
+      <div><strong>Orari Segreteria:</strong> Lun-Ven 9:00 - 12:00 / 15:00 - 18:00</div>
+      <div><strong>Social:</strong> 
+        <a href="#">Instagram</a> | 
+        <a href="#">Facebook</a> | 
+        <a href="#">YouTube</a>
+      </div>
+    </div>
+
+    <div class="map-container" onclick="enableMap()">
+      <div class="map-overlay" id="mapOverlay"></div>
+      <div class="map-message">Clicca per attivare la mappa</div>
+      <iframe
+        id="mapFrame"
+        src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Sanremo Water Polo – Tutti i diritti riservati</p>
+  </footer>
+
+  <script>
+    function enableMap() {
+      const overlay = document.getElementById('mapOverlay');
+      overlay.style.pointerEvents = 'none';
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+/* Reset e base */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: Arial, sans-serif; line-height:1.5; background:#f0f8ff; color:#003366; }
+a { color:#0066cc; text-decoration:none; }
+img { max-width:100%; display:block; }
+
+/* Header e nav */
+header { background:#004080; color:#fff; padding:1rem; text-align:center; }
+header img { height:60px; vertical-align:middle; }
+header h1 { display:inline-block; margin-left:0.5rem; font-size:2rem; vertical-align:middle; }
+nav { background:#0066cc; padding:0.5rem; text-align:center; }
+nav a { margin:0 1rem; font-weight:bold; color:white; }
+
+/* Main e sezioni */
+main { padding:2rem; max-width:1000px; margin:0 auto; }
+section { margin-bottom:3rem; }
+section h2 { border-bottom:2px solid #0066cc; padding-bottom:0.5rem; margin-bottom:1rem; }
+
+/* Griglie e card */
+.team-grid,
+.shop-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap:1rem; }
+.team-member,
+.shop-item { background:#fff; padding:1rem; text-align:center; border:1px solid #ccc; border-radius:8px; }
+.team-member img { border-radius:50%; width:100px; height:100px; object-fit:cover; margin:0 auto .5rem; }
+.shop-item img { width:100px; height:100px; object-fit:contain; margin:0 auto .5rem; }
+.shop-item button { margin-top:.5rem; padding:.5rem 1rem; background:#0066cc; color:white; border:none; border-radius:4px; cursor:pointer; }
+
+/* Matches */
+.matches .match { display:flex; gap:1rem; background:#fff; padding:1rem; border-radius:8px; border:1px solid #ccc; margin-bottom:1rem; }
+.matches .match img { width:150px; height:100px; object-fit:cover; border-radius:4px; }
+.match-info { flex:1; }
+
+/* News */
+.news-list article { background:#fff; padding:1rem; border-radius:8px; border:1px solid #ccc; margin-bottom:1rem; }
+.news-list time { display:block; font-size:.9rem; color:#666; margin-bottom:.5rem; }
+
+/* Contatti */
+.contacts p { margin:.5rem 0; }
+form input, form textarea { width:100%; padding:.5rem; margin-top:.25rem; border:1px solid #ccc; border-radius:4px; }
+form button { margin-top:.5rem; padding:.5rem 1rem; background:#0066cc; color:white; border:none; border-radius:4px; cursor:pointer; }
+
+/* Footer */
+footer { background:#004080; color:white; text-align:center; padding:1rem; }

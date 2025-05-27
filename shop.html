@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sanremo Water Polo – Shop</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      color: #333;
+    }
+
+    nav {
+      background: #001f3f;
+      color: white;
+      padding: 15px 0;
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+    }
+
+    nav ul li {
+      margin: 0 20px;
+    }
+
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1.1em;
+      transition: color 0.3s;
+    }
+
+    nav ul li a:hover {
+      color: #00bfff;
+    }
+
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)),
+        url("neg.png") no-repeat center/cover;
+      height: 70vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      margin-top: 60px;
+    }
+
+    .hero h1 {
+      font-size: 3em;
+      animation: slideDown 1s ease-out;
+    }
+
+    .hero p {
+      font-size: 1.3em;
+      max-width: 700px;
+      padding: 0 20px;
+      animation: fadeIn 2s ease;
+    }
+
+    section {
+      padding: 80px 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .section-title {
+      font-size: 2.5em;
+      margin-bottom: 40px;
+      text-align: center;
+      color: #003366;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      animation: fadeSlideUp 1s forwards;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: scale(1.05);
+    }
+
+    .card img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+    }
+
+    .card-content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .card-content h3 {
+      margin-bottom: 10px;
+      color: #003366;
+    }
+
+    .card-content p {
+      font-size: 0.95em;
+      color: #555;
+    }
+
+    .card-content span {
+      display: block;
+      margin: 15px 0 5px;
+      font-weight: bold;
+      color: #001f3f;
+    }
+
+    .warning {
+      color: #cc0000;
+      font-size: 0.9em;
+      margin-bottom: 10px;
+    }
+
+    .buy-button {
+      background-color: #00bfff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .buy-button:hover {
+      background-color: #0099cc;
+    }
+
+    footer {
+      background: #001f3f;
+      color: white;
+      text-align: center;
+      padding: 20px 0;
+      margin-top: 60px;
+    }
+
+    @keyframes slideDown {
+      from { transform: translateY(-50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+  <script>
+    function showUnavailableAlert() {
+      alert("Il prodotto selezionato non è al momento disponibile. Ti avviseremo non appena tornerà acquistabile!");
+    }
+  </script>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="squadra.html">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Shop Ufficiale</h1>
+    <p>Scopri i prodotti ufficiali del Sanremo Water Polo: stile, qualità e passione in ogni articolo.</p>
+  </div>
+
+  <!-- SHOP -->
+  <section>
+    <h2 class="section-title">Prodotti disponibili</h2>
+    <div class="shop-grid">
+
+      <!-- Card template -->
+      <!-- RICICLA QUESTO BLOCCO PER AGGIUNGERE NUOVI PRODOTTI -->
+      <div class="card">
+        <img src="non.png" alt="Maglia Gara 2025">
+        <div class="card-content">
+          <h3>Maglia Gara 2025</h3>
+          <p>Nuova divisa tecnica per la stagione 2025. Traspirante e resistente.</p>
+          <span>€49,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Zaino Team">
+        <div class="card-content">
+          <h3>Zaino Team</h3>
+          <p>Comodo e spazioso, con logo ufficiale. Perfetto per allenamenti e trasferte.</p>
+          <span>€35,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Cappellino">
+        <div class="card-content">
+          <h3>Cappellino Ufficiale</h3>
+          <p>Protezione e stile a bordo vasca. In cotone traspirante.</p>
+          <span>€15,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Asciugamano Club">
+        <div class="card-content">
+          <h3>Asciugamano Club</h3>
+          <p>Grande, morbido e super assorbente. Con logo ricamato.</p>
+          <span>€25,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <!-- Altri 4 prodotti -->
+      <div class="card">
+        <img src="non.png" alt="Felpa Team">
+        <div class="card-content">
+          <h3>Felpa Team</h3>
+          <p>Calda e confortevole, ideale per il dopo partita.</p>
+          <span>€55,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Berretto Invernale">
+        <div class="card-content">
+          <h3>Berretto Invernale</h3>
+          <p>Con ricamo ufficiale. Per tifosi sempre caldi!</p>
+          <span>€18,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Borraccia Sportiva">
+        <div class="card-content">
+          <h3>Borraccia Sportiva</h3>
+          <p>Leggera, resistente e riutilizzabile. Capacità 750ml.</p>
+          <span>€12,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <img src="non.png" alt="Infradito Ufficiali">
+        <div class="card-content">
+          <h3>Infradito Ufficiali</h3>
+          <p>Comode e resistenti per bordo vasca e tempo libero.</p>
+          <span>€20,00</span>
+          <div class="warning">Attualmente non disponibile</div>
+          <button class="buy-button" onclick="showUnavailableAlert()">Acquista</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2025 Sanremo Water Polo – Tutti i diritti riservati
+  </footer>
+</body>
+</html>
