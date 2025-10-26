@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sanremo Water Polo – Home</title>
+  
+  <!-- Preload critical assets -->
+  <link rel="preload" href="piscinasan.png.png" as="image">
+  
+  <style>
+    /* ============================================================================
+       CSS VARIABLES FOR THEME SWITCHING
+       ============================================================================ */
+    :root {
+      /* Default Theme (Yellow/Black) */
+      --primary-bg: #000000;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #ffd700;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --card-bg: rgba(26, 26, 26, 0.9);
+      --shadow-color: rgba(255, 215, 0, 0.3);
+      --border-color: rgba(255, 215, 0, 0.5);
+      --gradient-1: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      --gradient-2: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --primary-bg: #f8f9fa;
+      --secondary-bg: #ffffff;
+      --accent-color: #ffd700;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --nav-bg: rgba(248, 249, 250, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --border-color: rgba(255, 215, 0, 0.7);
+      --gradient-1: linear-gradient(135deg, #fff9e6 0%, #ffd700 100%);
+      --gradient-2: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --primary-bg: #0a0a0a;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #00d4ff;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --nav-bg: rgba(10, 10, 10, 0.92);
+      --card-bg: rgba(20, 20, 20, 0.95);
+      --shadow-color: rgba(0, 212, 255, 0.3);
+      --border-color: rgba(0, 212, 255, 0.5);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      --gradient-2: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    }
+
+    /* Blue Theme */
+    [data-theme="blue"] {
+      --primary-bg: #001f3f;
+      --secondary-bg: #003366;
+      --accent-color: #00bfff;
+      --text-primary: #ffffff;
+      --text-secondary: #a0d0ff;
+      --nav-bg: rgba(0, 31, 63, 0.9);
+      --card-bg: rgba(0, 51, 102, 0.95);
+      --shadow-color: rgba(0, 191, 255, 0.4);
+      --border-color: rgba(0, 191, 255, 0.6);
+      --gradient-1: linear-gradient(135deg, #00bfff 0%, #005f8f 100%);
+      --gradient-2: linear-gradient(135deg, #001f3f 0%, #003366 50%, #001f3f 100%);
+    }
+
+    /* ============================================================================
+       GLOBAL RESET & BASE STYLES
+       ============================================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      /* Hardware acceleration */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      will-change: transform;
+    }
+
+    /* ============================================================================
+       ANIMATED BACKGROUND WAVES
+       ============================================================================ */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 50%;
+      background: var(--gradient-1);
+      opacity: 0.05;
+      animation: waveAnimation 20s linear infinite;
+      transform: translateX(0);
+    }
+
+    .wave:nth-child(2) {
+      animation-duration: 15s;
+      animation-direction: reverse;
+      opacity: 0.03;
+    }
+
+    @keyframes waveAnimation {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ============================================================================
+       THEME SWITCHER
+       ============================================================================ */
+    .theme-switcher {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+      background: var(--nav-bg);
+      padding: 10px;
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: currentColor;
+      transition: width 0.3s, height 0.3s;
+      transform: translate(-50%, -50%);
+    }
+
+    .theme-btn:hover::before {
+      width: 300%;
+      height: 300%;
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .theme-btn.active {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .theme-btn:nth-child(1) { background: #ffd700; }
+    .theme-btn:nth-child(2) { background: #f8f9fa; }
+    .theme-btn:nth-child(3) { background: #0a0a0a; }
+    .theme-btn:nth-child(4) { background: #001f3f; }
+
+    /* ============================================================================
+       NAVIGATION (FIXED & BLUR EFFECT)
+       ============================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.scrolled {
+      padding: 10px 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      padding: 8px 20px;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    /* Animated underline effect */
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav ul li a:hover::after {
+      width: 70%;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px var(--shadow-color);
+    }
+
+    /* Active link indicator */
+    nav ul li a.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    /* ============================================================================
+       HERO SECTION WITH PARALLAX
+       ============================================================================ */
+    .hero {
+      position: relative;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+                  url("piscinasan.png.png") no-repeat center/cover;
+      background-attachment: fixed;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-2);
+      opacity: 0.3;
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 90%;
+      animation: heroFadeIn 1.5s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 6rem);
+      font-weight: 900;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: heroSlide 1s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 0 30px var(--shadow-color);
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      font-size: clamp(1.2rem, 4vw, 2rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      animation: heroFadeIn 1.8s ease-out;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    @keyframes heroSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Floating particles animation */
+    .hero::after {
+      content: '🏊🏊🏊';
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.1;
+      animation: float 20s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      0% { transform: translate(-50%, 0) rotate(0deg); }
+      100% { transform: translate(-50%, -100%) rotate(360deg); }
+    }
+
+    /* ============================================================================
+       SEARCH BAR (BONUS FEATURE)
+       ============================================================================ */
+    .search-container {
+      position: fixed;
+      top: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1001;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-container.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .search-box {
+      background: var(--nav-bg);
+      backdrop-filter: blur(15px);
+      padding: 12px 25px;
+      border-radius: 30px;
+      border: 2px solid var(--accent-color);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-box input {
+      background: transparent;
+      border: none;
+      color: var(--text-primary);
+      font-size: 1.1em;
+      outline: none;
+      width: 300px;
+    }
+
+    .search-box input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================================
+       SECTION TITLE
+       ============================================================================ */
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      text-align: center;
+      margin: 60px 0 80px;
+      position: relative;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 100px;
+      height: 2px;
+      background: var(--gradient-1);
+    }
+
+    .section-title::before {
+      left: -120px;
+    }
+
+    .section-title::after {
+      right: -120px;
+    }
+
+    /* ============================================================================
+       PREVIEW CARDS WITH STAGGERED ANIMATIONS
+       ============================================================================ */
+    .section {
+      padding: 100px 20px 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+      padding: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0;
+      transform: translateY(50px) scale(0.9);
+      border: 2px solid transparent;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Intersection Observer triggered animation */
+    .card.visible {
+      animation: cardSlideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+    .card:nth-child(4) { animation-delay: 0.4s; }
+    .card:nth-child(5) { animation-delay: 0.5s; }
+
+    @keyframes cardSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Hover effects with 3D transform */
+    .card:hover {
+      transform: translateY(-20px) scale(1.02) rotateX(5deg);
+      border-color: var(--accent-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
+
+    .card:hover::before {
+      opacity: 0.1;
+    }
+
+    .card-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      background: var(--secondary-bg);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: brightness(0.8);
+    }
+
+    .card:hover img {
+      transform: scale(1.15) rotate(2deg);
+      filter: brightness(1);
+    }
+
+    /* Ripple effect on click */
+    .card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      transition: width 0.6s, height 0.6s, opacity 0.6s;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .card.ripple::after {
+      width: 500px;
+      height: 500px;
+      opacity: 0;
+    }
+
+    .card-content {
+      padding: 30px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .card-content h3 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .card:hover .card-content h3 {
+      color: var(--accent-color);
+    }
+
+    .card-content p {
+      font-size: 1em;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      margin-bottom: 25px;
+      transition: color 0.3s ease;
+    }
+
+    .card:hover .card-content p {
+      color: var(--text-primary);
+    }
+
+    /* Button with animated background */
+    .card-content a {
+      display: inline-block;
+      padding: 12px 30px;
+      background: var(--gradient-1);
+      color: #000;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1em;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      border: 2px solid var(--accent-color);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-content a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transition: left 0.5s;
+    }
+
+    .card-content a:hover::before {
+      left: 100%;
+    }
+
+    .card-content a:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 25px var(--shadow-color);
+    }
+
+    .card-content a:active {
+      transform: translateY(-1px) scale(1);
+    }
+
+    /* ============================================================================
+       FOOTER
+       ============================================================================ */
+    footer {
+      background: var(--secondary-bg);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    footer p {
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+
+    /* ============================================================================
+       RESPONSIVE DESIGN
+       ============================================================================ */
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 30px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        width: 50px;
+      }
+
+      .section-title::before {
+        left: -60px;
+      }
+
+      .section-title::after {
+        right: -60px;
+      }
+
+      nav ul {
+        gap: 5px;
+      }
+
+      nav ul li a {
+        padding: 8px 15px;
+        font-size: 0.95em;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .theme-switcher {
+        top: 65px;
+        right: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .theme-btn {
+        width: 35px;
+        height: 35px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        padding: 10px;
+      }
+
+      .section {
+        padding: 80px 15px 60px;
+      }
+
+      .card {
+        border-radius: 15px;
+      }
+
+      .card-img-wrapper {
+        height: 200px;
+      }
+
+      .card-content {
+        padding: 25px;
+      }
+
+      .section-title {
+        font-size: 2rem;
+        margin: 40px 0 50px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        display: none;
+      }
+
+      nav ul {
+        gap: 3px;
+      }
+
+      nav ul li a {
+        padding: 6px 12px;
+        font-size: 0.85em;
+      }
+
+      .hero {
+        height: 85vh;
+      }
+
+      .search-box {
+        width: 90%;
+      }
+
+      .search-box input {
+        width: 250px;
+      }
+    }
+
+    /* Small mobile */
+    @media (max-width: 480px) {
+      .theme-switcher {
+        flex-direction: column;
+        top: 60px;
+        right: 5px;
+      }
+
+      .search-box input {
+        width: 200px;
+      }
+
+      .card-content a {
+        padding: 10px 20px;
+        font-size: 0.9em;
+      }
+    }
+
+    /* ============================================================================
+       MICRO-INTERACTIONS & UTILITY ANIMATIONS
+       ============================================================================ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .bounce {
+      animation: bounce 1s ease infinite;
+    }
+
+    /* Smooth scroll indicator */
+    .scroll-indicator {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      animation: bounce 2s ease infinite;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.3s;
+      z-index: 100;
+    }
+
+    .scroll-indicator:hover {
+      opacity: 1;
+    }
+
+    .scroll-indicator::after {
+      content: '↓';
+      font-size: 2em;
+      color: var(--accent-color);
+    }
+
+    /* Loading animation */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: var(--accent-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Easter egg indicator (flashing icon) */
+    .easter-egg-hint {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.5em;
+      animation: pulse 2s ease infinite;
+      opacity: 0.3;
+      cursor: pointer;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+    }
+  </style>
+</head>
+<body data-theme="default">
+  
+  <!-- Animated background waves -->
+  <div class="animated-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-btn active" data-theme="default" title="Yellow/Black Theme" aria-label="Yellow theme"></button>
+    <button class="theme-btn" data-theme="light" title="Light Theme" aria-label="Light theme"></button>
+    <button class="theme-btn" data-theme="dark" title="Dark Theme" aria-label="Dark theme"></button>
+    <button class="theme-btn" data-theme="blue" title="Blue Theme" aria-label="Blue theme"></button>
+  </div>
+
+  <!-- Search Bar (hidden by default) -->
+  <div class="search-container" id="searchContainer">
+    <div class="search-box">
+      <input type="text" placeholder="Search..." id="searchInput">
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <ul>
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="squadra.html">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <h1>Sanremo Water Polo</h1>
+      <p>Forza • Passione • Spirito di Squadra</p>
+    </div>
+  </section>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" onclick="document.querySelector('.section').scrollIntoView({behavior: 'smooth'})"></div>
+
+  <!-- Preview Sections -->
+  <section class="section" id="previews">
+    <h2 class="section-title">Scopri le Nostre Sezioni</h2>
+    <div class="grid" id="cardGrid">
+      <div class="card" data-link="squadra.html">
+        <div class="card-img-wrapper">
+          <img src="immaginis/squadra.png" alt="Squadra" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3>La Squadra</h3>
+          <p>Conosci i nostri giocatori, il coach Enrico Gerbò e il cuore pulsante del team. Storia, foto e profili dettagliati.</p>
+          <a href="squadra.html">Scopri di più →</a>
+        </div>
+      </div>
+
+      <div class="card" data-link="partite.html">
+        <div class="card-img-wrapper">
+          <img src="immaginis/calend.png" alt="Partite" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3>Calendario Partite</h3>
+          <p>Le prossime sfide, date e location degli incontri più importanti. Calendario completo e risultati in tempo reale.</p>
+          <a href="partite.html">Vai al calendario →</a>
+        </div>
+      </div>
+
+      <div class="card" data-link="news.html">
+        <div class="card-img-wrapper">
+          <img src="immaginis/newse.png" alt="News" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3>Ultime News</h3>
+          <p>Rimani aggiornato con le ultime notizie, interviste esclusive, highlights e risultati della squadra.</p>
+          <a href="news.html">Leggi le notizie →</a>
+        </div>
+      </div>
+
+      <div class="card" data-link="shop.html">
+        <div class="card-img-wrapper">
+          <img src="immaginis/shopp.png.png" alt="Shop" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3>Shop Ufficiale</h3>
+          <p>Acquista calotte, costumi e accessori con i colori della squadra. Merchandising esclusivo per i tifosi.</p>
+          <a href="shop.html">Vai allo shop →</a>
+        </div>
+      </div>
+
+      <div class="card" data-link="contatti.html">
+        <div class="card-img-wrapper">
+          <img src="immaginis/contatta.png" alt="Contatti" loading="lazy">
+        </div>
+        <div class="card-content">
+          <h3>Contattaci</h3>
+          <p>Scrivici per info, collaborazioni, eventi o per unirti alla squadra. Siamo sempre aperti alle nuove proposte.</p>
+          <a href="contatti.html">Contattaci ora →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Sanremo Water Polo – Tutti i diritti riservati</p>
+    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.6;">Made with 💪 and 🏊</p>
+  </footer>
+
+  <!-- Easter Egg Hint -->
+  <div class="easter-egg-hint" title="Easter Eggs: Try keyboard shortcuts!">🎉</div>
+
+  <script>
+    /* ============================================================================
+       THEME SWITCHING LOGIC
+       ============================================================================ */
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+
+    // Load saved theme or use default
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeButtons(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const theme = this.getAttribute('data-theme');
+        body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeButtons(theme);
+        
+        // Add ripple effect
+        createRipple(this);
+      });
+    });
+
+    function updateThemeButtons(activeTheme) {
+      themeButtons.forEach(btn => {
+        if (btn.getAttribute('data-theme') === activeTheme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    /* ============================================================================
+       NAVIGATION SCROLL EFFECTS
+       ============================================================================ */
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      // Hide/show navigation based on scroll direction
+      if (currentScroll > lastScroll && currentScroll > 200) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // Smooth active link transition
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function(e) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    /* ============================================================================
+       INTERSECTION OBSERVER FOR CARD ANIMATIONS
+       ============================================================================ */
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -100px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.card').forEach(card => {
+      observer.observe(card);
+    });
+
+    /* ============================================================================
+       RIPPLE EFFECT ON CARDS
+       ============================================================================ */
+    function createRipple(element, x, y) {
+      const rect = element.getBoundingClientRect();
+      const ripple = document.createElement('div');
+      ripple.style.position = 'absolute';
+      ripple.style.width = ripple.style.height = '10px';
+      ripple.style.left = (x || rect.width / 2) + 'px';
+      ripple.style.top = (y || rect.height / 2) + 'px';
+      ripple.style.background = 'rgba(255, 255, 255, 0.5)';
+      ripple.style.borderRadius = '50%';
+      ripple.style.transform = 'translate(-50%, -50%)';
+      ripple.style.animation = 'rippleAnimation 0.6s ease-out';
+      element.style.position = 'relative';
+      element.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 600);
+    }
+
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.addEventListener('click', function(e) {
+        this.classList.add('ripple');
+        setTimeout(() => this.classList.remove('ripple'), 600);
+        
+        // Navigate to link if clicked (not on button)
+        if (e.target.tagName !== 'A') {
+          const link = this.getAttribute('data-link');
+          if (link) {
+            window.location.href = link;
+          }
+        }
+      });
+    });
+
+    // Add ripple animation to CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes rippleAnimation {
+        to {
+          width: 300px;
+          height: 300px;
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    /* ============================================================================
+       SEARCH BAR (CTRL+F to toggle)
+       ============================================================================ */
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+
+    document.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'f') {
+        e.preventDefault();
+        searchContainer.classList.toggle('active');
+        if (searchContainer.classList.contains('active')) {
+          setTimeout(() => searchInput.focus(), 100);
+        }
+      }
+      
+      if (e.key === 'Escape') {
+        searchContainer.classList.remove('active');
+      }
+    });
+
+    /* ============================================================================
+       EASTER EGG: KEYBOARD SHORTCUTS
+       ============================================================================ */
+    let konami = [];
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let celebration = 0;
+
+    document.addEventListener('keydown', (e) => {
+      konami.push(e.key);
+      if (konami.length > 10) konami.shift();
+      
+      if (konami.join(',') === konamiCode.join(',')) {
+        if (celebration < 3) {
+          celebration++;
+          celebrate();
+          konami = [];
+        }
+      }
+    });
+
+    function celebrate() {
+      const colors = ['#ffd700', '#00d4ff', '#00bfff', '#ff6b6b', '#4ecdc4'];
+      document.body.style.background = colors[celebration];
+      
+      setTimeout(() => {
+        document.body.style.transition = 'background 1s ease';
+        document.body.style.background = '';
+      }, 1000);
+      
+      setTimeout(() => {
+        document.body.style.transition = '';
+      }, 2000);
+      
+      // Show celebration message
+      const message = document.createElement('div');
+      message.textContent = celebration === 3 ? '🎉 EASTER EGG DISCOVERED! 🎉' : '✨ Easter egg! ✨';
+      message.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: var(--card-bg);
+        padding: 30px 50px;
+        border-radius: 20px;
+        font-size: 2em;
+        font-weight: bold;
+        z-index: 9999;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        animation: fadeInUp 0.5s;
+      `;
+      document.body.appendChild(message);
+      
+      setTimeout(() => {
+        message.style.animation = 'fadeInUp 0.5s reverse';
+        setTimeout(() => message.remove(), 500);
+      }, 2000);
+    }
+
+    /* ============================================================================
+       SMOOTH SCROLL ON MOBILE
+       ============================================================================ */
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    /* ============================================================================
+       PERFORMANCE OPTIMIZATION
+       ============================================================================ */
+    // Debounce scroll events
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          // Scroll-dependent code here
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ============================================================================
+       ACCESSIBILITY ENHANCEMENTS
+       ============================================================================ */
+    // Keyboard navigation for theme buttons
+    themeButtons.forEach(btn => {
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          btn.click();
+        }
+      });
+    });
+
+    // Focus management
+    cards.forEach(card => {
+      card.setAttribute('tabindex', '0');
+      card.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const link = card.querySelector('a');
+          if (link) link.click();
+        }
+      });
+    });
+
+    console.log('%c Sanremo Water Polo ', 'background: #ffd700; color: #000; font-size: 20px; font-weight: bold; padding: 10px;');
+    console.log('%c Easter eggs activated! Try the Konami code! ', 'color: #ffd700; font-size: 12px;');
+  </script>
+</body>
+</html>
+
+  </script>
+</body>
+</html>

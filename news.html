@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sanremo Water Polo – News</title>
+  
+  <style>
+    /* ============================================================================
+       CSS VARIABLES FOR THEME SWITCHING (consistent with index.html)
+       ============================================================================ */
+    :root {
+      /* Default Theme (Yellow/Black) */
+      --primary-bg: #000000;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #ffd700;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --card-bg: rgba(26, 26, 26, 0.9);
+      --shadow-color: rgba(255, 215, 0, 0.3);
+      --border-color: rgba(255, 215, 0, 0.5);
+      --gradient-1: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      --gradient-2: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --primary-bg: #f8f9fa;
+      --secondary-bg: #ffffff;
+      --accent-color: #ffd700;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --nav-bg: rgba(248, 249, 250, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --border-color: rgba(255, 215, 0, 0.7);
+      --gradient-1: linear-gradient(135deg, #fff9e6 0%, #ffd700 100%);
+      --gradient-2: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --primary-bg: #0a0a0a;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #00d4ff;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --nav-bg: rgba(10, 10, 10, 0.92);
+      --card-bg: rgba(20, 20, 20, 0.95);
+      --shadow-color: rgba(0, 212, 255, 0.3);
+      --border-color: rgba(0, 212, 255, 0.5);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      --gradient-2: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    }
+
+    /* Blue Theme */
+    [data-theme="blue"] {
+      --primary-bg: #001f3f;
+      --secondary-bg: #003366;
+      --accent-color: #00bfff;
+      --text-primary: #ffffff;
+      --text-secondary: #a0d0ff;
+      --nav-bg: rgba(0, 31, 63, 0.9);
+      --card-bg: rgba(0, 51, 102, 0.95);
+      --shadow-color: rgba(0, 191, 255, 0.4);
+      --border-color: rgba(0, 191, 255, 0.6);
+      --gradient-1: linear-gradient(135deg, #00bfff 0%, #005f8f 100%);
+      --gradient-2: linear-gradient(135deg, #001f3f 0%, #003366 50%, #001f3f 100%);
+    }
+
+    /* ============================================================================
+       GLOBAL RESET & BASE STYLES
+       ============================================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ============================================================================
+       ANIMATED BACKGROUND WAVES
+       ============================================================================ */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 50%;
+      background: var(--gradient-1);
+      opacity: 0.05;
+      animation: waveAnimation 20s linear infinite;
+      transform: translateX(0);
+    }
+
+    .wave:nth-child(2) {
+      animation-duration: 15s;
+      animation-direction: reverse;
+      opacity: 0.03;
+    }
+
+    @keyframes waveAnimation {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ============================================================================
+       THEME SWITCHER
+       ============================================================================ */
+    .theme-switcher {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+      background: var(--nav-bg);
+      padding: 10px;
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: currentColor;
+      transition: width 0.3s, height 0.3s;
+      transform: translate(-50%, -50%);
+    }
+
+    .theme-btn:hover::before {
+      width: 300%;
+      height: 300%;
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .theme-btn.active {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .theme-btn:nth-child(1) { background: #ffd700; }
+    .theme-btn:nth-child(2) { background: #f8f9fa; }
+    .theme-btn:nth-child(3) { background: #0a0a0a; }
+    .theme-btn:nth-child(4) { background: #001f3f; }
+
+    /* ============================================================================
+       NAVIGATION (FIXED & BLUR EFFECT)
+       ============================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.scrolled {
+      padding: 10px 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      padding: 8px 20px;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav ul li a:hover::after {
+      width: 70%;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px var(--shadow-color);
+    }
+
+    nav ul li a.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    /* ============================================================================
+       HERO SECTION
+       ============================================================================ */
+    .hero {
+      position: relative;
+      height: 60vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+                  url("immaginis/newe.png") no-repeat center/cover;
+      background-attachment: fixed;
+      margin-top: 60px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-2);
+      opacity: 0.3;
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 90%;
+      animation: heroFadeIn 1.5s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: heroSlide 1s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 0 30px var(--shadow-color);
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      animation: heroFadeIn 1.8s ease-out;
+      letter-spacing: 1px;
+      max-width: 700px;
+      padding: 0 20px;
+    }
+
+    @keyframes heroSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ============================================================================
+       SEARCH AND FILTER BAR
+       ============================================================================ */
+    .news-controls {
+      position: sticky;
+      top: 70px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(15px);
+      padding: 20px;
+      margin: 40px auto 30px;
+      max-width: 1400px;
+      border-radius: 20px;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+      z-index: 999;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .search-container {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      min-width: 250px;
+      position: relative;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 15px 50px 15px 20px;
+      background: var(--secondary-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 30px;
+      color: var(--text-primary);
+      font-size: 1em;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 20px var(--shadow-color);
+    }
+
+    .search-box::after {
+      content: '🔍';
+      position: absolute;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      animation: searchPulse 2s ease infinite;
+    }
+
+    @keyframes searchPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    .category-filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .filter-btn {
+      padding: 10px 25px;
+      background: var(--secondary-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 25px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .filter-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: var(--accent-color);
+      transition: width 0.5s, height 0.5s;
+      transform: translate(-50%, -50%);
+      z-index: -1;
+    }
+
+    .filter-btn:hover::before,
+    .filter-btn.active::before {
+      width: 300%;
+      height: 300%;
+    }
+
+    .filter-btn:hover {
+      color: #000;
+      border-color: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px var(--shadow-color);
+    }
+
+    .filter-btn.active {
+      background: var(--accent-color);
+      color: #000;
+      border-color: var(--accent-color);
+    }
+
+    /* ============================================================================
+       NEWS ARTICLES SECTION
+       ============================================================================ */
+    .section {
+      padding: 50px 20px 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 100px;
+      height: 2px;
+      background: var(--gradient-1);
+    }
+
+    .section-title::before {
+      left: -120px;
+    }
+
+    .section-title::after {
+      right: -120px;
+    }
+
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    /* ============================================================================
+       ARTICLE CARDS
+       ============================================================================ */
+    .article-card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(40px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-card.visible {
+      animation: cardSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    .article-card:nth-child(1) { animation-delay: 0.05s; }
+    .article-card:nth-child(2) { animation-delay: 0.1s; }
+    .article-card:nth-child(3) { animation-delay: 0.15s; }
+    .article-card:nth-child(4) { animation-delay: 0.2s; }
+    .article-card:nth-child(5) { animation-delay: 0.25s; }
+    .article-card:nth-child(6) { animation-delay: 0.3s; }
+    .article-card:nth-child(7) { animation-delay: 0.35s; }
+    .article-card:nth-child(8) { animation-delay: 0.4s; }
+    .article-card:nth-child(9) { animation-delay: 0.45s; }
+    .article-card:nth-child(10) { animation-delay: 0.5s; }
+
+    @keyframes cardSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .article-card:hover {
+      transform: translateY(-15px) scale(1.02);
+      border-color: var(--accent-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+    }
+
+    .article-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .article-card:hover::before {
+      opacity: 0.05;
+    }
+
+    .article-image {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      overflow: hidden;
+      background: var(--secondary-bg);
+    }
+
+    .article-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: brightness(0.85);
+    }
+
+    .article-card:hover .article-image img {
+      transform: scale(1.15) rotate(2deg);
+      filter: brightness(1);
+    }
+
+    .article-category {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: var(--accent-color);
+      color: #000;
+      padding: 6px 15px;
+      border-radius: 20px;
+      font-size: 0.8em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .article-content {
+      padding: 25px;
+      position: relative;
+      z-index: 2;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-date {
+      font-size: 0.85em;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .article-date::before {
+      content: '📅';
+      font-size: 1.2em;
+    }
+
+    .article-content h3 {
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+      line-height: 1.3;
+      flex-grow: 0;
+    }
+
+    .article-card:hover .article-content h3 {
+      color: var(--accent-color);
+    }
+
+    .article-content p {
+      font-size: 1em;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      transition: color 0.3s ease;
+      flex-grow: 1;
+    }
+
+    .article-card:hover .article-content p {
+      color: var(--text-primary);
+    }
+
+    .read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 25px;
+      background: var(--gradient-1);
+      color: #000;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95em;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      align-self: flex-start;
+    }
+
+    .read-more::after {
+      content: '→';
+      transition: transform 0.3s ease;
+    }
+
+    .read-more:hover {
+      transform: translateX(-3px) translateY(-2px);
+      box-shadow: 0 6px 25px var(--shadow-color);
+    }
+
+    .read-more:hover::after {
+      transform: translateX(5px);
+    }
+
+    /* ============================================================================
+       MODAL POPUP
+       ============================================================================ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(5px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-overlay.fade-out {
+      opacity: 0;
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 25px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      transform: translateY(50px) scale(0.9);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid var(--border-color);
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: var(--accent-color);
+      color: #000;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 10;
+      font-weight: bold;
+    }
+
+    .modal-close:hover {
+      background: #ffed4e;
+      transform: rotate(90deg) scale(1.1);
+      box-shadow: 0 0 20px var(--shadow-color);
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .modal-category {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: var(--accent-color);
+      color: #000;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-content {
+      padding: 40px;
+    }
+
+    .modal-date {
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-date::before {
+      content: '📅';
+      font-size: 1.2em;
+    }
+
+    .modal-content h2 {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .modal-content .full-text {
+      font-size: 1.1em;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+
+    .modal-content .full-text p {
+      margin-bottom: 20px;
+    }
+
+    /* ============================================================================
+       FAKE AD BANNERS
+       ============================================================================ */
+    .ad-banner {
+      background: var(--gradient-1);
+      border-radius: 20px;
+      padding: 30px;
+      margin: 60px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 40px rgba(255, 215, 0, 0.2);
+    }
+
+    .ad-banner:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 50px rgba(255, 215, 0, 0.4);
+    }
+
+    .ad-banner::before {
+      content: 'SPONSORIZZATO';
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(0, 0, 0, 0.3);
+      color: #000;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 0.7em;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .ad-banner h3 {
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      color: #000;
+    }
+
+    .ad-banner p {
+      font-size: 1.1em;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .ad-button {
+      background: #000;
+      color: #ffd700;
+      padding: 12px 30px;
+      border-radius: 25px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+
+    .ad-button:hover {
+      background: var(--secondary-bg);
+      transform: scale(1.05);
+    }
+
+    /* ============================================================================
+       FOOTER
+       ============================================================================ */
+    footer {
+      background: var(--secondary-bg);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    footer p {
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+
+    /* ============================================================================
+       RESPONSIVE DESIGN
+       ============================================================================ */
+    @media (max-width: 1024px) {
+      .news-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        width: 50px;
+      }
+
+      .section-title::before {
+        left: -60px;
+      }
+
+      .section-title::after {
+        right: -60px;
+      }
+
+      .news-controls {
+        position: relative;
+        top: 0;
+      }
+
+      .modal {
+        max-width: 95%;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .theme-switcher {
+        top: 65px;
+        right: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .theme-btn {
+        width: 35px;
+        height: 35px;
+      }
+
+      .news-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .hero {
+        height: 50vh;
+        margin-top: 60px;
+      }
+
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        display: none;
+      }
+
+      .modal-content {
+        padding: 25px;
+      }
+
+      .modal-content h2 {
+        font-size: 1.5em;
+      }
+
+      .article-card:hover {
+        transform: translateY(-10px) scale(1.01);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .theme-switcher {
+        flex-direction: column;
+        top: 60px;
+        right: 5px;
+      }
+
+      .hero {
+        height: 45vh;
+      }
+
+      .news-controls {
+        padding: 15px;
+      }
+
+      .filter-btn {
+        padding: 8px 15px;
+        font-size: 0.85em;
+      }
+    }
+
+    /* ============================================================================
+       UTILITY ANIMATIONS
+       ============================================================================ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+    }
+  </style>
+</head>
+<body data-theme="default">
+  
+  <!-- Animated background waves -->
+  <div class="animated-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-btn active" data-theme="default" title="Yellow/Black Theme" aria-label="Yellow theme"></button>
+    <button class="theme-btn" data-theme="light" title="Light Theme" aria-label="Light theme"></button>
+    <button class="theme-btn" data-theme="dark" title="Dark Theme" aria-label="Dark theme"></button>
+    <button class="theme-btn" data-theme="blue" title="Blue Theme" aria-label="Blue theme"></button>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="squadra.html">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html" class="active">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Ultime Notizie</h1>
+      <p>Rimani aggiornato su tutte le novità e gli eventi del Sanremo Water Polo Club</p>
+    </div>
+  </section>
+
+  <!-- Search and Filter Controls -->
+  <div class="news-controls">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="Cerca tra le notizie...">
+      </div>
+    </div>
+    <div class="category-filters">
+      <button class="filter-btn active" data-category="all">Tutte</button>
+      <button class="filter-btn" data-category="matches">Partite</button>
+      <button class="filter-btn" data-category="events">Eventi</button>
+      <button class="filter-btn" data-category="team">Squadra</button>
+      <button class="filter-btn" data-category="announcements">Annunci</button>
+    </div>
+  </div>
+
+  <!-- News Articles Section -->
+  <section class="section">
+    <h2 class="section-title">Notizie Recenti</h2>
+    <div class="news-grid" id="newsGrid">
+      
+      <!-- ARTICLE 1 -->
+      <article class="article-card" data-category="matches" data-title="vittoria genova">
+        <div class="article-image">
+          <img src="immaginis/vittoriagen.png" alt="Vittoria Genova" loading="lazy">
+          <div class="article-category">Partite</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">15 Gennaio 2025</div>
+          <h3>Vittoria Storica a Genova</h3>
+          <p>Il Sanremo Water Polo ha sconfitto i Genova Sharks con un netto 12-7 in una partita spettacolare. Una prestazione magistrale che segna un nuovo capitolo per la squadra.</p>
+          <button class="read-more" onclick="openModal(0)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 2 -->
+      <article class="article-card" data-category="team" data-title="nuove maglie 2025">
+        <div class="article-image">
+          <img src="immaginis/piscina_Sanremo.png" alt="Nuove Maglie" loading="lazy">
+          <div class="article-category">Squadra</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">12 Gennaio 2025</div>
+          <h3>Nuove Maglie 2025</h3>
+          <p>Presentata la nuova divisa ufficiale per la stagione 2025: più leggera, performante e con uno stile completamente rinnovato. Disponibile ora in shop.</p>
+          <button class="read-more" onclick="openModal(1)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 3 -->
+      <article class="article-card" data-category="events" data-title="under 18 semifinale">
+        <div class="article-image">
+          <img src="immaginis/under.png" alt="Under 18" loading="lazy">
+          <div class="article-category">Eventi</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">10 Gennaio 2025</div>
+          <h3>Under 18 in Semifinale</h3>
+          <p>La squadra giovanile conquista le semifinali regionali: un traguardo storico e una promessa per il futuro della società. Bravissimi ragazzi!</p>
+          <button class="read-more" onclick="openModal(2)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- FAKE AD BANNER 1 -->
+      <div class="ad-banner" onclick="handleAdClick()">
+        <h3>🏊 AquaTech Pro</h3>
+        <p>Attrezzatura professionale per pallanuoto. Sconti esclusivi per i soci Sanremo!</p>
+        <button class="ad-button">Visita Ora →</button>
+      </div>
+
+      <!-- ARTICLE 4 -->
+      <article class="article-card" data-category="announcements" data-title="open day piscina">
+        <div class="article-image">
+          <img src="immaginis/open.png" alt="Open Day" loading="lazy">
+          <div class="article-category">Annunci</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">8 Gennaio 2025</div>
+          <h3>Open Day in Piscina</h3>
+          <p>Sabato 15 Giugno tutti in vasca per scoprire il mondo della pallanuoto! Aperto a bambini e ragazzi di tutte le età. Vi aspettiamo!</p>
+          <button class="read-more" onclick="openModal(3)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 5 -->
+      <article class="article-card" data-category="team" data-title="allenamento speciale">
+        <div class="article-image">
+          <img src="immaginis/piscinasan.png.png" alt="Allenamento" loading="lazy">
+          <div class="article-category">Squadra</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">5 Gennaio 2025</div>
+          <h3>Allenamento Speciale con Coach Gerbò</h3>
+          <p>Sessione intensiva di tecnica e strategia con il coach Enrico Gerbò. Focus su difesa e contropiede per le prossime sfide. Resoconto completo.</p>
+          <button class="read-more" onclick="openModal(4)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 6 -->
+      <article class="article-card" data-category="matches" data-title="calendario febbraio">
+        <div class="article-image">
+          <img src="immaginis/calend.png" alt="Calendario" loading="lazy">
+          <div class="article-category">Partite</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">3 Gennaio 2025</div>
+          <h3>Calendario Febbraio 2025</h3>
+          <p>Pubblicato il calendario ufficiale delle partite di Febbraio. Tre incontri importantissimi da non perdere. Supporta la squadra!</p>
+          <button class="read-more" onclick="openModal(5)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- FAKE AD BANNER 2 -->
+      <div class="ad-banner" onclick="handleAdClick()">
+        <h3>🥇 SwimMaster Shop</h3>
+        <p>Costumi e attrezzatura top di gamma. Qualità professionale al tuo servizio.</p>
+        <button class="ad-button">Scopri di più →</button>
+    </div>
+
+      <!-- ARTICLE 7 -->
+      <article class="article-card" data-category="team" data-title="capitano intervista">
+        <div class="article-image">
+          <img src="immaginis/profiles.png" alt="Intervista Capitano" loading="lazy">
+          <div class="article-category">Squadra</div>
+          </div>
+        <div class="article-content">
+          <div class="article-date">30 Dicembre 2024</div>
+          <h3>Intervista al Capitano</h3>
+          <p>Parola al capitano della squadra che ci racconta obiettivi e aspettative per questa stagione. Un leader dentro e fuori dalla piscina.</p>
+          <button class="read-more" onclick="openModal(6)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 8 -->
+      <article class="article-card" data-category="events" data-title="torneo natalizio">
+        <div class="article-image">
+          <img src="immaginis/calenario.png" alt="Torneo Natalizio" loading="lazy">
+          <div class="article-category">Eventi</div>
+          </div>
+        <div class="article-content">
+          <div class="article-date">28 Dicembre 2024</div>
+          <h3>Torneo Natalizio: Terzo Posto</h3>
+          <p>Il Sanremo conclude il Torneo di Natale al terzo posto. Prestazione di squadra eccezionale e grande spirito di gruppo dimostrato in gara.</p>
+          <button class="read-more" onclick="openModal(7)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- FAKE AD BANNER 3 -->
+      <div class="ad-banner" onclick="handleAdClick()">
+        <h3>💧 WaveEnergy.it</h3>
+        <p>Integratori sportivi e programmi di recupero. Energia pura per i tuoi allenamenti!</p>
+        <button class="ad-button">Prova Gratis →</button>
+          </div>
+
+      <!-- ARTICLE 9 -->
+      <article class="article-card" data-category="announcements" data-title="centro estivo">
+        <div class="article-image">
+          <img src="immaginis/piscina_Sanremo.png" alt="Centro Estivo" loading="lazy">
+          <div class="article-category">Annunci</div>
+        </div>
+        <div class="article-content">
+          <div class="article-date">25 Dicembre 2024</div>
+          <h3>Centro Estivo 2025: Iscrizioni Aperte</h3>
+          <p>Anche quest'anno il Sanremo organizza il centro estivo di pallanuoto per ragazzi dai 8 ai 16 anni. Dopo il grande successo dello scorso anno!</p>
+          <button class="read-more" onclick="openModal(8)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- ARTICLE 10 -->
+      <article class="article-card" data-category="matches" data-title="vittoria milano">
+        <div class="article-image">
+          <img src="immaginis/poolmilano.png" alt="Vittoria Milano" loading="lazy">
+          <div class="article-category">Partite</div>
+          </div>
+        <div class="article-content">
+          <div class="article-date">20 Dicembre 2024</div>
+          <h3>Vittoria a Milano</h3>
+          <p>Il Sanremo vince 10-8 nello storico match contro Milano Sharks. Serata indimenticabile con i tifosi al seguito in trasferta.</p>
+          <button class="read-more" onclick="openModal(9)">Leggi di più</button>
+        </div>
+      </article>
+
+      <!-- FAKE AD BANNER 4 -->
+      <div class="ad-banner" onclick="handleAdClick()">
+        <h3>🏆 SportsMax Italia</h3>
+        <p>Il miglior abbigliamento tecnico per acqua. Traspirante, leggero, performante.</p>
+        <button class="ad-button">Ordina Ora →</button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- MODAL POPUP -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <div class="modal-image" id="modalImage"></div>
+      <div class="modal-content">
+        <div class="modal-date" id="modalDate"></div>
+        <h2 id="modalTitle"></h2>
+        <div class="full-text" id="modalText"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Sanremo Water Polo – Tutti i diritti riservati</p>
+    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.6;">Made with 💪 and 🏊</p>
+  </footer>
+
+  <script>
+    // ============================================================================
+    // ARTICLE DATA (Full Content for Modals)
+    // ============================================================================
+    const articles = [
+      {
+        title: "Vittoria Storica a Genova",
+        category: "Partite",
+        date: "15 Gennaio 2025",
+        image: "immaginis/vittoriagen.png",
+        imageAlt: "Vittoria Genova",
+        preview: "Il Sanremo Water Polo ha sconfitto i Genova Sharks con un netto 12-7 in una partita spettacolare. Una prestazione magistrale che segna un nuovo capitolo per la squadra.",
+        fullText: `<p>In una partita memorabile disputata al PalaFroglia, il Sanremo Water Polo ha conquistato una vittoria storica contro i Genova Sharks con il punteggio di 12-7. La squadra ha dimostrato una prestazione eccezionale dall'inizio alla fine, mostrando grande determinazione e tecnica di altissimo livello.</p>
+        <p>La partita è iniziata con un ritmo sostenuto da entrambe le squadre, ma il Sanremo ha preso il controllo già dal primo quarto, chiudendo sul 4-2. Il secondo quarto ha visto la squadra locale estendere il vantaggio grazie a un'efficace strategia difensiva e a contropiedi brillanti.</p>
+        <p>Gli highlight della serata: il portiere Marco Rossi ha effettuato 15 parate, mentre il capitano Luca Bianchi ha segnato 4 reti personali. Una serata da ricordare per tutti i tifosi presenti in tribuna!</p>`
+      },
+      {
+        title: "Nuove Maglie 2025",
+        category: "Squadra",
+        date: "12 Gennaio 2025",
+        image: "immaginis/piscina_Sanremo.png",
+        imageAlt: "Nuove Maglie",
+        preview: "Presentata la nuova divisa ufficiale per la stagione 2025: più leggera, performante e con uno stile completamente rinnovato. Disponibile ora in shop.",
+        fullText: `<p>Il club è orgoglioso di presentare la nuova divisa ufficiale 2025, che combina stile contemporaneo e tecnologia all'avanguardia. Realizzata con tessuti di ultima generazione, la nuova maglia è stata progettata per offrire massima performance e comfort durante le partite.</p>
+        <p>Le caratteristiche principali includono tecnologia a secco rapido, ventilazione migliorata nelle zone critiche e una vestibilità ottimizzata per i movimenti in acqua. Il design è stato aggiornato mantenendo i colori storici del club.</p>
+        <p>Le nuove divise saranno disponibili nello shop ufficiale a partire da questa settimana, in tutte le taglie. Per i soci del club sono previsti sconti esclusivi. Non perdere l'opportunità di indossare i colori del Sanremo!</p>`
+      },
+      {
+        title: "Under 18 in Semifinale",
+        category: "Eventi",
+        date: "10 Gennaio 2025",
+        image: "immaginis/under.png",
+        imageAlt: "Under 18",
+        preview: "La squadra giovanile conquista le semifinali regionali: un traguardo storico e una promessa per il futuro della società. Bravissimi ragazzi!",
+        fullText: `<p>Grande emozione e orgoglio per il settore giovanile del Sanremo Water Polo! La squadra Under 18 ha conquistato l'accesso alle semifinali regionali dopo un'impresa davvero straordinaria.</p>
+        <p>La squadra, guidata dal coach Carlo Mariani, ha dimostrato grande maturità e determinazione durante tutto il percorso. I giovani giocatori hanno affrontato le sfide con grinta e hanno saputo superare avversari di grande calibro.</p>
+        <p>Il prossimo appuntamento sarà contro la Società Nuotatori di Torino il prossimo fine settimana. Sosteniamo i nostri ragazzi in questo traguardo importante per il futuro del club!</p>`
+      },
+      {
+        title: "Open Day in Piscina",
+        category: "Annunci",
+        date: "8 Gennaio 2025",
+        image: "immaginis/open.png",
+        imageAlt: "Open Day",
+        preview: "Sabato 15 Giugno tutti in vasca per scoprire il mondo della pallanuoto! Aperto a bambini e ragazzi di tutte le età. Vi aspettiamo!",
+        fullText: `<p>Sabato 15 Giugno dalle ore 10:00 alle ore 18:00, il Sanremo Water Polo organizza una giornata interamente dedicata alla scoperta di questo sport affascinante. L'evento è aperto a bambini e ragazzi di tutte le età che vogliono provare la pallanuoto.</p>
+        <p>La giornata prevede:</p>
+        <p>✅ Lezioni gratuite per principianti<br>
+        ✅ Giochi e attività acquatiche<br>
+        ✅ Incontro con i giocatori della prima squadra<br>
+        ✅ Dimostrazioni tecniche<br>
+        ✅ Merenda per tutti i partecipanti</p>
+        <p>Non è necessaria prenotazione, ma consigliamo di presentarsi con costume e cuffia. Vi aspettiamo numerosi per trascorrere insieme una giornata all'insegna dello sport e del divertimento!</p>`
+      },
+      {
+        title: "Allenamento Speciale con Coach Gerbò",
+        category: "Squadra",
+        date: "5 Gennaio 2025",
+        image: "immaginis/piscinasan.png.png",
+        imageAlt: "Allenamento",
+        preview: "Sessione intensiva di tecnica e strategia con il coach Enrico Gerbò. Focus su difesa e contropiede per le prossime sfide. Resoconto completo.",
+        fullText: `<p>Una sessione di allenamento intensa e proficua quella di ieri pomeriggio, con il coach Enrico Gerbò al timone. La squadra si è concentrata su due aspetti fondamentali del gioco: la difesa organizzata e il contropiede.</p>
+        <p>L'allenamento è iniziato con esercizi tecnici sulla difesa a zona, seguito da simulazioni di situazioni di gioco reale. Grande attenzione è stata posta sulla comunicazione tra i giocatori in fase difensiva.</p>
+        <p>La seconda parte della sessione si è concentrata sul contropiede, con particolare focus sulla velocità di transizione e sulla precisione nei passaggi. Il coach ha espresso grande soddisfazione per l'impegno dimostrato dai giocatori.</p>
+        <p>"La squadra sta progredendo in modo eccellente. Gli obiettivi per questa stagione sono chiari e tutti i ragazzi stanno facendo la loro parte", ha dichiarato Gerbò al termine dell'allenamento.</p>`
+      },
+      {
+        title: "Calendario Febbraio 2025",
+        category: "Partite",
+        date: "3 Gennaio 2025",
+        image: "immaginis/calend.png",
+        imageAlt: "Calendario",
+        preview: "Pubblicato il calendario ufficiale delle partite di Febbraio. Tre incontri importantissimi da non perdere. Supporta la squadra!",
+        fullText: `<p>Il calendario ufficiale per il mese di Febbraio è finalmente stato pubblicato. La squadra affronterà tre partite importantissime che potrebbero essere decisive per la stagione.</p>
+        <p><strong>Domenica 2 Febbraio - Ore 16:00</strong><br>
+        Sanremo vs Nuotatori Milano (Casa - Piscina Comunale)</p>
+        <p><strong>Domenica 9 Febbraio - Ore 15:30</strong><br>
+        Sanremo vs Sharks Torino (Trasferta)</p>
+        <p><strong>Domenica 23 Febbraio - Ore 16:00</strong><br>
+        Sanremo vs Mare Swim Napoli (Casa - Piscina Comunale)</p>
+        <p>Tutte le partite in casa saranno giocate presso la Piscina Comunale di Sanremo. I tifosi sono invitati a partecipare numerosi per supportare la squadra in questi incontri cruciali!</p>`
+      },
+      {
+        title: "Intervista al Capitano",
+        category: "Squadra",
+        date: "30 Dicembre 2024",
+        image: "immaginis/profiles.png",
+        imageAlt: "Intervista Capitano",
+        preview: "Parola al capitano della squadra che ci racconta obiettivi e aspettative per questa stagione. Un leader dentro e fuori dalla piscina.",
+        fullText: `<p>Oggi abbiamo avuto il piacere di intervistare il nostro capitano, Luca Bianchi, che ci ha raccontato le sue impressioni sulla stagione in corso e i suoi obiettivi per il futuro.</p>
+        <p>"Questa squadra ha un grande potenziale. L'ambiente è fantastico, c'è grande unione e tutti condividiamo lo stesso obiettivo: vincere e divertirci insieme. Il lavoro che stiamo facendo in allenamento si sta vedendo in campo.</p>
+        <p>Gli obiettivi per questa stagione sono chiari: conquistare un posto nelle prime posizioni del campionato e fare sempre meglio delle nostre capacità. Il supporto dei tifosi è fondamentale per noi.</p>
+        <p>La pallanuoto è uno sport che richiede grande sacrificio e dedizione. Non sempre è facile, ma quando vedi il risultato finale e il sorriso dei tuoi compagni, capisci perché vale la pena farlo."</p>
+        <p>Luca è giunto al Sanremo nel 2020 e in questi anni è diventato un punto di riferimento per la squadra, dimostrando leadership e carattere dentro e fuori dalla piscina.</p>`
+      },
+      {
+        title: "Torneo Natalizio: Terzo Posto",
+        category: "Eventi",
+        date: "28 Dicembre 2024",
+        image: "immaginis/calenario.png",
+        imageAlt: "Torneo Natalizio",
+        preview: "Il Sanremo conclude il Torneo di Natale al terzo posto. Prestazione di squadra eccezionale e grande spirito di gruppo dimostrato in gara.",
+        fullText: `<p>Si è concluso con successo il Torneo Natalizio 2024 di Pallanuoto, che ha visto il Sanremo Water Polo classificarsi al terzo posto dopo una serie di partite emozionanti e combattute.</p>
+        <p>Il torneo, che ha ospitato otto squadre provenienti da tutta Italia, è stato l'occasione per mostrare il grande livello competitivo del campionato. Il Sanremo ha affrontato ogni avversario con determinazione e coraggio.</p>
+        <p>Nella finale per il terzo posto, la squadra ha battuto gli Sharks di Genova con un netto 14-10, chiudendo così il torneo su un'altra pre strende punteggio. Una performance eccellente che dimostra come il lavoro di squadra sia la chiave del successo.</p>
+        <p>I giocatori e lo staff sono soddisfatti del risultato e pronti a continuare con la stessa grinta nel campionato. Un grande ringraziamento va anche ai tifosi che hanno sostenuto la squadra durante tutto il torneo!</p>`
+      },
+      {
+        title: "Centro Estivo 2025: Iscrizioni Aperte",
+        category: "Annunci",
+        date: "25 Dicembre 2024",
+        image: "immaginis/piscina_Sanremo.png",
+        imageAlt: "Centro Estivo",
+        preview: "Anche quest'anno il Sanremo organizza il centro estivo di pallanuoto per ragazzi dai 8 ai 16 anni. Dopo il grande successo dello scorso anno!",
+        fullText: `<p>Dopo il grandissimo successo dello scorso anno, il Sanremo Water Polo ripropone il Centro Estivo di Pallanuoto 2025. Un'esperienza unica per ragazzi e ragazze che vogliono avvicinarsi a questo bellissimo sport o perfezionare le proprie capacità.</p>
+        <p><strong>Quando:</strong> Dal 1° Luglio al 31 Agosto 2025<br>
+        <strong>Orari:</strong> Lunedì-Venerdì, 9:00-12:00<br>
+        <strong>Età:</strong> 8-16 anni<br>
+        <strong>Dove:</strong> Piscina Comunale di Sanremo</p>
+        <p>Il centro estivo offre:</p>
+        <p>🏊 Lezioni di nuoto e pallanuoto<br>
+        🎯 Attività ludiche e sportive<br>
+        🏆 Tornei interni e giochi<br>
+        🍉 Merenda inclusa<br>
+        👨‍🏫 Istruttori qualificati</p>
+        <p>Le iscrizioni sono già aperte e i posti sono limitati. Per informazioni e prenotazioni: <strong>info@sanremowaterpolo.it</strong> oppure <strong>+39 0184 555123</strong></p>`
+      },
+      {
+        title: "Vittoria a Milano",
+        category: "Partite",
+        date: "20 Dicembre 2024",
+        image: "immaginis/poolmilano.png",
+        imageAlt: "Vittoria Milano",
+        preview: "Il Sanremo vince 10-8 nello storico match contro Milano Sharks. Serata indimenticabile con i tifosi al seguito in trasferta.",
+        fullText: `<p>In una partita memorabile giocata in trasferta, il Sanremo Water Polo ha conquistato una vittoria prestigiosa contro i Milano Sharks, risultato finale 10-8. Una serata da incorniciare per tutti i tifosi che hanno seguito la squadra in trasferta.</p>
+        <p>La partita è stata equilibrata fino all'ultimo quarto, con entrambe le squadre che hanno dato il massimo. Il Sanremo è riuscito a mantenere la concentrazione nelle fasi finali, grazie soprattutto a una difesa solida e a una grande capacità di gestione del tempo di gioco.</p>
+        <p>Il punto decisivo è stato segnato a 3 minuti dalla fine, permettendo alla squadra di gestire l'ultima fase con tranquillità. Una grande prova di maturità e carattere da parte di tutto il roster.</p>
+        <p>Particolarmente emozionante è stato vedere la gioia dei giocatori e dei tifosi alla fine dell'incontro. Questa vittoria rappresenta un passo importante verso gli obiettivi stagionali. Forza Sanremo!</p>`
+      }
+    ];
+
+    // ============================================================================
+    // THEME SWITCHING LOGIC
+    // ============================================================================
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeButtons(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const theme = this.getAttribute('data-theme');
+        body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeButtons(theme);
+      });
+    });
+
+    function updateThemeButtons(activeTheme) {
+      themeButtons.forEach(btn => {
+        if (btn.getAttribute('data-theme') === activeTheme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    // ============================================================================
+    // NAVIGATION SCROLL EFFECTS
+    // ============================================================================
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      if (currentScroll > lastScroll && currentScroll > 200) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    // ============================================================================
+    // INTERSECTION OBSERVER FOR CARD ANIMATIONS
+    // ============================================================================
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.article-card').forEach(card => {
+      observer.observe(card);
+    });
+
+    // ============================================================================
+    // SEARCH FUNCTIONALITY
+    // ============================================================================
+    const searchInput = document.getElementById('searchInput');
+    const articleCards = document.querySelectorAll('.article-card');
+
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      
+      articleCards.forEach(card => {
+        const title = card.getAttribute('data-title').toLowerCase();
+        const category = card.getAttribute('data-category').toLowerCase();
+        
+        if (title.includes(searchTerm) || category.includes(searchTerm)) {
+          card.style.display = 'flex';
+          card.style.animation = 'fadeInUp 0.4s ease forwards';
+        } else {
+          card.style.animation = 'fadeOut 0.3s ease forwards';
+          setTimeout(() => {
+            if (!card.classList.contains('hidden')) {
+              card.style.display = 'none';
+            }
+          }, 300);
+        }
+      });
+    });
+
+    // ============================================================================
+    // FILTER FUNCTIONALITY
+    // ============================================================================
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        filterButtons.forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const category = this.getAttribute('data-category');
+        
+        articleCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-category');
+          
+          if (category === 'all' || cardCategory === category) {
+            card.style.display = 'flex';
+            card.style.animation = 'fadeInUp 0.4s ease forwards';
+          } else {
+            card.style.animation = 'fadeOut 0.3s ease forwards';
+            setTimeout(() => {
+              card.style.display = 'none';
+            }, 300);
+          }
+        });
+      });
+    });
+
+    // ============================================================================
+    // MODAL FUNCTIONALITY
+    // ============================================================================
+    function openModal(index) {
+      const article = articles[index];
+      const modalOverlay = document.getElementById('modalOverlay');
+      const modalImage = document.getElementById('modalImage');
+      const modalDate = document.getElementById('modalDate');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalText = document.getElementById('modalText');
+
+      modalImage.innerHTML = `
+        <img src="${article.image}" alt="${article.imageAlt}" loading="lazy">
+        <div class="modal-category">${article.category}</div>
+      `;
+      modalDate.innerHTML = article.date;
+      modalTitle.textContent = article.title;
+      modalText.innerHTML = article.fullText;
+
+      modalOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modalOverlay = document.getElementById('modalOverlay');
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on overlay click
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // ============================================================================
+    // FAKE AD HANDLER
+    // ============================================================================
+    function handleAdClick() {
+      const messages = [
+        "🏊 Navigazione verso AquaTech Pro simulata!",
+        "🥇 SwimMaster Shop: simulazione di apertura!",
+        "💧 WaveEnergy.it: click simulato con successo!",
+        "🏆 SportsMax Italia: acquisto simulato completato!"
+      ];
+      
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      
+      // Create a fun notification
+      const notification = document.createElement('div');
+      notification.textContent = randomMessage;
+      notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: var(--accent-color);
+        color: #000;
+        padding: 15px 25px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 3000;
+        animation: slideInRight 0.3s ease;
+        font-weight: bold;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.3s ease forwards';
+        setTimeout(() => notification.remove(), 300);
+      }, 2500);
+    }
+
+    // Add animations for notifications
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+      @keyframes slideOutRight {
+        to {
+          transform: translateX(400px);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    console.log('%c Sanremo Water Polo - News ', 'background: #ffd700; color: #000; font-size: 20px; font-weight: bold; padding: 10px;');
+    console.log('%c 10 articoli caricati - Modal attivata ', 'color: #ffd700; font-size: 12px;');
+  </script>
+</body>
+</html>

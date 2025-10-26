@@ -1,0 +1,2347 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sanremo Water Polo – Squadra</title>
+  
+  <!-- Preload critical assets -->
+  <link rel="preload" href="immaginis/squadra.png" as="image">
+  
+  <style>
+    /* ============================================================================
+       CSS VARIABLES FOR THEME SWITCHING (consistent with other pages)
+       ============================================================================ */
+    :root {
+      /* Default Theme (Yellow/Black) */
+      --primary-bg: #000000;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #ffd700;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --card-bg: rgba(26, 26, 26, 0.9);
+      --shadow-color: rgba(255, 215, 0, 0.3);
+      --border-color: rgba(255, 215, 0, 0.5);
+      --gradient-1: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      --gradient-2: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --primary-bg: #f8f9fa;
+      --secondary-bg: #ffffff;
+      --accent-color: #ffd700;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --nav-bg: rgba(248, 249, 250, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --border-color: rgba(255, 215, 0, 0.7);
+      --gradient-1: linear-gradient(135deg, #fff9e6 0%, #ffd700 100%);
+      --gradient-2: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --primary-bg: #0a0a0a;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #00d4ff;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --nav-bg: rgba(10, 10, 10, 0.92);
+      --card-bg: rgba(20, 20, 20, 0.95);
+      --shadow-color: rgba(0, 212, 255, 0.3);
+      --border-color: rgba(0, 212, 255, 0.5);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      --gradient-2: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    }
+
+    /* Blue Theme */
+    [data-theme="blue"] {
+      --primary-bg: #001f3f;
+      --secondary-bg: #003366;
+      --accent-color: #00bfff;
+      --text-primary: #ffffff;
+      --text-secondary: #a0d0ff;
+      --nav-bg: rgba(0, 31, 63, 0.9);
+      --card-bg: rgba(0, 51, 102, 0.95);
+      --shadow-color: rgba(0, 191, 255, 0.4);
+      --border-color: rgba(0, 191, 255, 0.6);
+      --gradient-1: linear-gradient(135deg, #00bfff 0%, #005f8f 100%);
+      --gradient-2: linear-gradient(135deg, #001f3f 0%, #003366 50%, #001f3f 100%);
+    }
+
+    /* ============================================================================
+       GLOBAL RESET & BASE STYLES
+       ============================================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      will-change: transform;
+    }
+
+    /* ============================================================================
+       ANIMATED BACKGROUND WAVES
+       ============================================================================ */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 50%;
+      background: var(--gradient-1);
+      opacity: 0.05;
+      animation: waveAnimation 20s linear infinite;
+      transform: translateX(0);
+    }
+
+    .wave:nth-child(2) {
+      animation-duration: 15s;
+      animation-direction: reverse;
+      opacity: 0.03;
+    }
+
+    @keyframes waveAnimation {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ============================================================================
+       THEME SWITCHER
+       ============================================================================ */
+    .theme-switcher {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+      background: var(--nav-bg);
+      padding: 10px;
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: currentColor;
+      transition: width 0.3s, height 0.3s;
+      transform: translate(-50%, -50%);
+    }
+
+    .theme-btn:hover::before {
+      width: 300%;
+      height: 300%;
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .theme-btn.active {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .theme-btn:nth-child(1) { background: #ffd700; }
+    .theme-btn:nth-child(2) { background: #f8f9fa; }
+    .theme-btn:nth-child(3) { background: #0a0a0a; }
+    .theme-btn:nth-child(4) { background: #001f3f; }
+
+    /* ============================================================================
+       NAVIGATION (FIXED & BLUR EFFECT)
+       ============================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.scrolled {
+      padding: 10px 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      padding: 8px 20px;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav ul li a:hover::after {
+      width: 70%;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px var(--shadow-color);
+    }
+
+    nav ul li a.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    /* ============================================================================
+       HERO SECTION WITH PARALLAX
+       ============================================================================ */
+    .hero {
+      position: relative;
+      height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+                  url("immaginis/squadra.png") no-repeat center/cover;
+      background-attachment: fixed;
+      margin-top: 60px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-2);
+      opacity: 0.3;
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 90%;
+      animation: heroFadeIn 1.5s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: heroSlide 1s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 0 30px var(--shadow-color);
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      animation: heroFadeIn 1.8s ease-out;
+      letter-spacing: 1px;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+
+    @keyframes heroSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ============================================================================
+       COACH PROFILE CARD (Animated Description)
+       ============================================================================ */
+    .coach-section {
+      padding: 80px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 60px;
+      position: relative;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 100px;
+      height: 2px;
+      background: var(--gradient-1);
+    }
+
+    .section-title::before {
+      left: -120px;
+    }
+
+    .section-title::after {
+      right: -120px;
+    }
+
+    .coach-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 30px;
+      overflow: hidden;
+      border: 3px solid var(--accent-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      position: relative;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: coachSlideUp 1s ease-out 0.5s forwards;
+    }
+
+    @keyframes coachSlideUp {
+      to {
+      opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Coach image circle */
+    .coach-image-wrapper {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 6px solid var(--accent-color);
+      box-shadow: 0 10px 40px var(--shadow-color);
+      margin-bottom: 30px;
+      position: relative;
+      animation: profilePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes profilePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .coach-image-wrapper::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 3px solid var(--accent-color);
+      border-radius: 50%;
+      animation: rotateBorder 10s linear infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes rotateBorder {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .coach-image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .coach-image-wrapper:hover img {
+      transform: scale(1.1);
+    }
+
+    .coach-name {
+      font-size: 2.5em;
+      font-weight: 900;
+      margin-bottom: 10px;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+    }
+
+    .coach-title {
+      font-size: 1.3em;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 30px;
+      text-align: center;
+      font-weight: 700;
+    }
+
+    .coach-description {
+      font-size: 1.1em;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 600px;
+        opacity: 0;
+      animation: fadeInLines 2s ease-out 1.5s forwards;
+    }
+
+    @keyframes fadeInLines {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================================================
+       PLAYERS CAROUSEL SECTION
+       ============================================================================ */
+    .players-section {
+      padding: 80px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .carousel-container {
+      position: relative;
+      margin: 50px 0;
+    }
+
+    /* Navigation arrows */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--card-bg);
+      border: 2px solid var(--accent-color);
+      color: var(--accent-color);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.5em;
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      opacity: 0.7;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-btn:hover {
+      opacity: 1;
+      transform: translateY(-50%) scale(1.1);
+      background: var(--accent-color);
+      color: #000;
+      box-shadow: 0 6px 25px var(--shadow-color);
+    }
+
+    .carousel-btn:active {
+      transform: translateY(-50%) scale(0.95);
+    }
+
+    .carousel-btn.prev {
+      left: -70px;
+    }
+
+    .carousel-btn.next {
+      right: -70px;
+    }
+
+    /* Carousel track */
+    .players-carousel {
+      display: flex;
+      gap: 30px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      padding: 20px 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .players-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Player cards */
+    .player-card {
+      min-width: 280px;
+      flex: 0 0 auto;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      position: relative;
+      scroll-snap-align: center;
+      opacity: 0;
+      transform: translateY(50px);
+      animation: playerSlideUp 0.6s ease-out forwards;
+    }
+
+    @keyframes playerSlideUp {
+      to {
+      opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .player-card:nth-child(1) { animation-delay: 0.1s; }
+    .player-card:nth-child(2) { animation-delay: 0.15s; }
+    .player-card:nth-child(3) { animation-delay: 0.2s; }
+    .player-card:nth-child(4) { animation-delay: 0.25s; }
+    .player-card:nth-child(5) { animation-delay: 0.3s; }
+    .player-card:nth-child(6) { animation-delay: 0.35s; }
+    .player-card:nth-child(7) { animation-delay: 0.4s; }
+    .player-card:nth-child(8) { animation-delay: 0.45s; }
+    .player-card:nth-child(9) { animation-delay: 0.5s; }
+    .player-card:nth-child(10) { animation-delay: 0.55s; }
+
+    /* Hover effects */
+    .player-card:hover {
+      transform: translateY(-15px) scale(1.05);
+      border-color: var(--accent-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+    }
+
+    .player-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .player-card:hover::before {
+      opacity: 0.05;
+    }
+
+    /* Player image */
+    .player-image {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      overflow: hidden;
+      background: var(--secondary-bg);
+    }
+
+    .player-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      filter: brightness(0.85);
+    }
+
+    .player-card:hover .player-image img {
+      transform: scale(1.2) rotate(3deg);
+      filter: brightness(1.1);
+    }
+
+    /* Player content */
+    .player-content {
+      padding: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .player-name {
+      font-size: 1.5em;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .player-card:hover .player-name {
+      color: var(--accent-color);
+    }
+
+    .player-role {
+      font-size: 0.9em;
+      color: var(--accent-color);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .player-description {
+      font-size: 0.95em;
+      line-height: 1.6;
+      color: var(--text-secondary);
+      transition: color 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .player-card:hover .player-description {
+      color: var(--text-primary);
+    }
+
+    /* Player stats (appears on hover) */
+    .player-stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+        opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      margin-top: 15px;
+      }
+
+    .player-card:hover .player-stats {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+    .stat-item {
+      background: var(--secondary-bg);
+      padding: 8px 12px;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 0.85em;
+      border: 1px solid var(--border-color);
+    }
+
+    .stat-label {
+      font-weight: 700;
+      color: var(--accent-color);
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .stat-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    /* ============================================================================
+       HALL OF FAME MODAL (Easter Egg - Enhanced with Mini-Game)
+       ============================================================================ */
+    .hof-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      backdrop-filter: blur(15px);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.4s ease;
+      overflow-y: auto;
+    }
+
+    .hof-modal.active {
+      display: flex;
+    }
+
+    /* Animated background ripples in modal */
+    .hof-modal::before {
+      content: '';
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 215, 0, 0.03) 0%, transparent 70%);
+      animation: rippleBg 15s ease-in-out infinite;
+    }
+
+    @keyframes rippleBg {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.2); }
+    }
+
+    .hof-content {
+      background: var(--card-bg);
+      border: 3px solid var(--accent-color);
+      border-radius: 30px;
+      padding: 50px;
+      max-width: 900px;
+      max-height: 95vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      animation: modalSlideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1;
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(80px) scale(0.85);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hof-close {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      background: var(--accent-color);
+      color: #000;
+      width: 45px;
+      height: 45px;
+      border: none;
+      border-radius: 50%;
+      font-size: 1.8em;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      font-weight: 900;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hof-close:hover {
+      transform: rotate(90deg) scale(1.15);
+      box-shadow: 0 0 30px var(--shadow-color);
+      background: #ffed4e;
+    }
+
+    .hof-title {
+      font-size: 3em;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      animation: titleGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes titleGlow {
+      0%, 100% { filter: drop-shadow(0 0 10px var(--shadow-color)); }
+      50% { filter: drop-shadow(0 0 25px var(--shadow-color)); }
+    }
+
+    .hof-description {
+      text-align: center;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      line-height: 1.8;
+      font-size: 1.1em;
+    }
+
+    /* Tabs for switching between sections */
+    .hof-tabs {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hof-tab {
+      padding: 12px 30px;
+      background: var(--secondary-bg);
+      border: 2px solid var(--border-color);
+      border-radius: 25px;
+      color: var(--text-primary);
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.9em;
+    }
+
+    .hof-tab:hover {
+      border-color: var(--accent-color);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px var(--shadow-color);
+    }
+
+    .hof-tab.active {
+      background: var(--accent-color);
+      color: #000;
+      border-color: var(--accent-color);
+    }
+
+    .hof-section {
+      display: none;
+      animation: fadeInUp 0.5s ease;
+    }
+
+    .hof-section.active {
+      display: block;
+    }
+
+    /* ============================================================================
+       HALL OF FAME CARDS (Animated grid)
+       ============================================================================ */
+    .hof-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 25px;
+      margin-bottom: 30px;
+    }
+
+    .hof-card {
+      background: var(--secondary-bg);
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(30px) scale(0.9);
+      animation: cardSlideIn 0.6s ease forwards;
+    }
+
+    .hof-card:nth-child(1) { animation-delay: 0.1s; }
+    .hof-card:nth-child(2) { animation-delay: 0.2s; }
+    .hof-card:nth-child(3) { animation-delay: 0.3s; }
+    .hof-card:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes cardSlideIn {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .hof-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, var(--accent-color), transparent);
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .hof-card:hover::before {
+      opacity: 0.1;
+    }
+
+    .hof-card:hover {
+      transform: translateY(-10px) scale(1.05);
+      border-color: var(--accent-color);
+      box-shadow: 0 15px 40px var(--shadow-color);
+    }
+
+    .hof-card-image {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 0 auto 15px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3em;
+      border: 4px solid var(--accent-color);
+      transition: all 0.4s ease;
+      animation: profileBounce 3s ease-in-out infinite;
+    }
+
+    @keyframes profileBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+
+    .hof-card:hover .hof-card-image {
+      transform: scale(1.1) rotate(5deg);
+      border-color: var(--text-primary);
+    }
+
+    .hof-card-name {
+      font-size: 1.3em;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: var(--accent-color);
+    }
+
+    .hof-card-role {
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hof-card-stats {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5em;
+      font-weight: 900;
+      color: var(--accent-color);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.75em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* ============================================================================
+       MINI-GAME SECTION (Water Polo Shooting Game)
+       ============================================================================ */
+    .game-container {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .game-info {
+      background: var(--secondary-bg);
+      padding: 20px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      border: 2px solid var(--border-color);
+    }
+
+    .game-score {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .score-display {
+      font-size: 1.5em;
+      font-weight: 900;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .score-label {
+      font-size: 0.9em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .game-canvas-container {
+      position: relative;
+      background: var(--gradient-2);
+      border: 3px solid var(--accent-color);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 20px 0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .game-canvas {
+      display: block;
+      width: 100%;
+      height: 400px;
+      background: linear-gradient(to bottom, #006994 0%, #004d6e 100%);
+      cursor: crosshair;
+      position: relative;
+    }
+
+    .game-goal {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 80px;
+      border: 5px solid var(--text-primary);
+      border-bottom: none;
+      border-radius: 200px 200px 0 0;
+    }
+
+    .game-keeper {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 80px;
+      background: var(--accent-color);
+      border-radius: 50% 50% 20px 20px;
+      animation: keeperMove 2s ease-in-out infinite;
+      z-index: 10;
+    }
+
+    @keyframes keeperMove {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-5px); }
+    }
+
+    .ball {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .ball-trail {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: fadeOut 0.8s ease forwards;
+    }
+
+    @keyframes fadeOut {
+      to { opacity: 0; transform: scale(0.5); }
+    }
+
+    .goal-celebration {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4em;
+      animation: celebration 1s ease;
+    }
+
+    @keyframes celebration {
+      0% { transform: translate(-50%, -50%) scale(0) rotate(0deg); }
+      50% { transform: translate(-50%, -50%) scale(1.5) rotate(180deg); }
+      100% { transform: translate(-50%, -50%) scale(1) rotate(360deg); }
+    }
+
+    .game-controls {
+      margin-top: 20px;
+    }
+
+    .shoot-btn {
+      padding: 15px 40px;
+      background: var(--gradient-1);
+      color: #000;
+      border: none;
+      border-radius: 30px;
+      font-size: 1.2em;
+      font-weight: 900;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+
+    .shoot-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px var(--shadow-color);
+    }
+
+    .shoot-btn:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    .shoot-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ============================================================================
+       HIDDEN GALLERY (Revealed after 5 goals)
+       ============================================================================ */
+    .hidden-gallery {
+      display: none;
+      animation: fadeInUp 0.8s ease;
+      margin-top: 30px;
+    }
+
+    .hidden-gallery.revealed {
+      display: block;
+    }
+
+    .gallery-title {
+      font-size: 2em;
+      text-align: center;
+      margin-bottom: 25px;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 900;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 20px;
+    }
+
+    .gallery-item {
+      background: var(--secondary-bg);
+      border-radius: 15px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: all 0.4s ease;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.6s ease forwards;
+    }
+
+    .gallery-item:nth-child(1) { animation-delay: 0.1s; }
+    .gallery-item:nth-child(2) { animation-delay: 0.2s; }
+    .gallery-item:nth-child(3) { animation-delay: 0.3s; }
+    .gallery-item:nth-child(4) { animation-delay: 0.4s; }
+    .gallery-item:nth-child(5) { animation-delay: 0.5s; }
+    .gallery-item:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-10px) scale(1.05);
+      border-color: var(--accent-color);
+      box-shadow: 0 15px 40px var(--shadow-color);
+    }
+
+    .gallery-image {
+      width: 100%;
+      height: 150px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3em;
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-item:hover .gallery-image {
+      transform: scale(1.15);
+    }
+
+    /* ============================================================================
+       FOOTER
+       ============================================================================ */
+    footer {
+      background: var(--secondary-bg);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    footer p {
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+
+    /* ============================================================================
+       RESPONSIVE DESIGN
+       ============================================================================ */
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .section-title::before,
+      .section-title::after {
+        width: 50px;
+      }
+
+      .section-title::before {
+        left: -60px;
+      }
+
+      .section-title::after {
+        right: -60px;
+      }
+
+      .carousel-btn.prev {
+        left: 10px;
+      }
+
+      .carousel-btn.next {
+        right: 10px;
+      }
+
+      .player-card {
+        min-width: 250px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .theme-switcher {
+        top: 65px;
+        right: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .theme-btn {
+        width: 35px;
+        height: 35px;
+      }
+
+      .hero {
+        height: 50vh;
+      margin-top: 60px;
+      }
+
+      .coach-card {
+        padding: 30px 20px;
+      }
+
+      .coach-image-wrapper {
+        width: 150px;
+        height: 150px;
+      }
+
+      .coach-name {
+        font-size: 2em;
+      }
+
+      .player-card {
+        min-width: 220px;
+      }
+
+      .player-card:hover {
+        transform: translateY(-10px) scale(1.02);
+      }
+
+      .carousel-btn.prev,
+      .carousel-btn.next {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2em;
+      }
+
+      .carousel-btn.prev {
+        left: 5px;
+      }
+
+      .carousel-btn.next {
+        right: 5px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        display: none;
+      }
+
+      .hof-content {
+        padding: 30px 20px;
+      }
+    }
+
+    /* Small mobile */
+    @media (max-width: 480px) {
+      .theme-switcher {
+        flex-direction: column;
+        top: 60px;
+        right: 5px;
+      }
+
+      .hero {
+        height: 45vh;
+      }
+
+      .coach-image-wrapper {
+        width: 120px;
+        height: 120px;
+      }
+
+      .coach-name {
+        font-size: 1.5em;
+      }
+
+      .player-card {
+        min-width: 200px;
+        min-height: 400px;
+      }
+
+      .player-stats {
+        display: none;
+      }
+
+      .carousel-btn {
+        display: none;
+      }
+    }
+
+    /* ============================================================================
+       UTILITY ANIMATIONS
+       ============================================================================ */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Easter egg hint */
+    .easter-egg-hint {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 1.5em;
+      animation: pulse 2s ease infinite;
+      opacity: 0.3;
+      cursor: pointer;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 0.3; }
+      50% { transform: scale(1.1); opacity: 0.6; }
+    }
+  </style>
+</head>
+<body data-theme="default">
+  
+  <!-- Animated background waves -->
+  <div class="animated-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-btn active" data-theme="default" title="Yellow/Black Theme" aria-label="Yellow theme"></button>
+    <button class="theme-btn" data-theme="light" title="Light Theme" aria-label="Light theme"></button>
+    <button class="theme-btn" data-theme="dark" title="Dark Theme" aria-label="Dark theme"></button>
+    <button class="theme-btn" data-theme="blue" title="Blue Theme" aria-label="Blue theme"></button>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="squadra.html" class="active">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+    <h1>La Nostra Squadra</h1>
+    <p>Guidati dall'esperto allenatore Enrico Gerbò, i nostri atleti rappresentano forza, passione e spirito di squadra.</p>
+  </div>
+  </section>
+
+  <!-- Coach Section -->
+  <section class="coach-section">
+    <h2 class="section-title">Il Nostro Allenatore</h2>
+    <div class="coach-card">
+      <div class="coach-image-wrapper">
+        <img src="immaginis/allenatore.png" alt="Enrico Gerbò" loading="lazy">
+        </div>
+      <h3 class="coach-name">Enrico Gerbò</h3>
+      <p class="coach-title">Allenatore Capo</p>
+      <p class="coach-description">
+        Con oltre 40 anni di esperienza nel mondo della pallanuoto, Enrico Gerbò è il cuore strategico della nostra squadra. 
+        I suoi metodi innovativi e la sua passione hanno portato il Sanremo Water Polo a nuovi livelli di eccellenza.
+      </p>
+    </div>
+  </section>
+
+  <!-- Players Carousel Section -->
+  <section class="players-section">
+    <h2 class="section-title">I Nostri Giocatori</h2>
+    <div class="carousel-container">
+      <button class="carousel-btn prev" onclick="scrollCarousel(-1)">‹</button>
+      <button class="carousel-btn next" onclick="scrollCarousel(1)">›</button>
+      
+      <div class="players-carousel" id="playersCarousel">
+        
+        <!-- Player 1 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiles.png" alt="Alessandro" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Alessandro</h4>
+            <p class="player-role">Portiere</p>
+            <p class="player-description">Portiere agile e determinato, un vero e proprio muro in porta.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Partite</span>
+                <span class="stat-value">45</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Parate</span>
+                <span class="stat-value">89%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 2 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiless.png" alt="Davide" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Davide</h4>
+            <p class="player-role">Attaccante</p>
+            <p class="player-description">Attaccante dalla forza surreale, specialista nei tiri da 6 metri.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Gol</span>
+                <span class="stat-value">32</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Assist</span>
+                <span class="stat-value">18</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 3 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiles.png" alt="Leonardo" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Leonardo</h4>
+            <p class="player-role">Centroboa</p>
+            <p class="player-description">Centroboa resistente e dominante nelle mischie.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Fisico</span>
+                <span class="stat-value">95%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Strategia</span>
+                <span class="stat-value">88%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 4 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiless.png" alt="Nicolò" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Nicolò</h4>
+            <p class="player-role">Attaccante</p>
+            <p class="player-description">Maestro nei tiri di precisione, capace di segnare anche da posizioni impossibili.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Precisione</span>
+                <span class="stat-value">92%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Gol</span>
+                <span class="stat-value">28</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 5 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiles.png" alt="Daniele" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Daniele</h4>
+            <p class="player-role">Terzino</p>
+            <p class="player-description">Velocista instancabile, sempre pronto al contropiede e ai recuperi in difesa.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Velocità</span>
+                <span class="stat-value">96%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Recuperi</span>
+                <span class="stat-value">42</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 6 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiless.png" alt="Christian" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Christian</h4>
+            <p class="player-role">Attaccante</p>
+            <p class="player-description">Attaccante incrollabile, capace di mantenere la calma anche nei momenti più critici.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Concentrazione</span>
+                <span class="stat-value">94%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Gol</span>
+                <span class="stat-value">25</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 7 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiles.png" alt="Stefano" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Stefano</h4>
+            <p class="player-role">Capitano</p>
+            <p class="player-description">Motivatore del gruppo, punto di riferimento in acqua e fuori.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Leadership</span>
+                <span class="stat-value">98%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Esperienza</span>
+                <span class="stat-value">12 anni</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 8 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiless.png" alt="Alessio" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Alessio</h4>
+            <p class="player-role">Difensore</p>
+            <p class="player-description">Il capitano della squadra, assieme a Roberto crea una difesa solida e inespugnabile.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Difesa</span>
+                <span class="stat-value">91%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Fisico</span>
+                <span class="stat-value">93%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 9 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiles.png" alt="Fabio" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Fabio</h4>
+            <p class="player-role">Regista</p>
+            <p class="player-description">Stratega inimitabile, regista delle azioni offensive più spettacolari.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Visione</span>
+                <span class="stat-value">95%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Assist</span>
+                <span class="stat-value">35</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Player 10 -->
+        <div class="player-card">
+          <div class="player-image">
+            <img src="immaginis/profiless.png" alt="Roberto" loading="lazy">
+          </div>
+          <div class="player-content">
+            <h4 class="player-name">Roberto</h4>
+            <p class="player-role">Difensore</p>
+            <p class="player-description">Difensore coriaceo, sempre pronto al sacrificio per la squadra.</p>
+            <div class="player-stats">
+              <div class="stat-item">
+                <span class="stat-label">Resistenza</span>
+                <span class="stat-value">90%</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Sacrifici</span>
+                <span class="stat-value">15</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================================
+       HALL OF FAME MODAL (Enhanced Easter Egg with Mini-Game)
+       ============================================================================ -->
+  <div class="hof-modal" id="hofModal">
+    <div class="hof-content">
+      <!-- Close button -->
+      <button class="hof-close" onclick="closeHOF()" aria-label="Close modal">×</button>
+      
+      <!-- Main title -->
+      <h2 class="hof-title">Hall of Fame</h2>
+      <p class="hof-description">
+        🏆 Hai sbloccato la sezione segreta! 🏆<br>
+        Esplora le leggende del Sanremo Water Polo e gioca il mini-game interattivo!
+      </p>
+
+      <!-- Tabs to switch between Hall of Fame and Mini-Game -->
+      <div class="hof-tabs">
+        <button class="hof-tab active" onclick="switchTab('fame')">⭐ Hall of Fame</button>
+        <button class="hof-tab" onclick="switchTab('game')">🏊 Mini-Game</button>
+      </div>
+
+      <!-- Hall of Fame Section -->
+      <div class="hof-section active" id="hofFameSection">
+        <div class="hof-grid">
+          
+          <!-- Legend Card 1 -->
+          <div class="hof-card">
+            <div class="hof-card-image">🏅</div>
+            <div class="hof-card-name">Enrico Gerbò</div>
+            <div class="hof-card-role">Allenatore</div>
+            <div class="hof-card-stats">
+              <div class="stat">
+                <span class="stat-value">40</span>
+                <span class="stat-label">Anni</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">15</span>
+                <span class="stat-label">Titoli</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend Card 2 -->
+          <div class="hof-card">
+            <div class="hof-card-image">🥇</div>
+            <div class="hof-card-name">Marco Rossi</div>
+            <div class="hof-card-role">Capitano 2015</div>
+            <div class="hof-card-stats">
+              <div class="stat">
+                <span class="stat-value">300+</span>
+                <span class="stat-label">Partite</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">150</span>
+                <span class="stat-label">Gol</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend Card 3 -->
+          <div class="hof-card">
+            <div class="hof-card-image">⚽</div>
+            <div class="hof-card-name">Luca Verdi</div>
+            <div class="hof-card-role">Portiere Leggendario</div>
+            <div class="hof-card-stats">
+              <div class="stat">
+                <span class="stat-value">95%</span>
+                <span class="stat-label">Parate</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">250</span>
+                <span class="stat-label">Shutouts</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legend Card 4 -->
+          <div class="hof-card">
+            <div class="hof-card-image">🌊</div>
+            <div class="hof-card-name">Sanremo 1998</div>
+            <div class="hof-card-role">Squadra Storica</div>
+            <div class="hof-card-stats">
+              <div class="stat">
+                <span class="stat-value">1°</span>
+                <span class="stat-label">Posto</span>
+              </div>
+              <div class="stat">
+                <span class="stat-value">24</span>
+                <span class="stat-label">Vittorie</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <p style="text-align: center; color: var(--text-secondary); margin-top: 20px;">
+          💡 Gioca il Mini-Game e segna 5 gol per sbloccare la Gallery Segreta!
+        </p>
+      </div>
+
+      <!-- Mini-Game Section -->
+      <div class="hof-section" id="hofGameSection">
+        <div class="game-container">
+          
+          <!-- Game Info Bar -->
+          <div class="game-info">
+            <div class="game-score">
+              <div>
+                <div class="score-label">Punteggio</div>
+                <div class="score-display" id="gameScore">0 / 5</div>
+              </div>
+              <div>
+                <div class="score-label">Tiri</div>
+                <div class="score-display" id="gameAttempts">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Game Canvas with Goal -->
+          <div class="game-canvas-container">
+            <canvas class="game-canvas" id="gameCanvas" width="600" height="400"></canvas>
+            <!-- Goal will be drawn via JavaScript -->
+            <div class="game-goal" id="gameGoal"></div>
+            <div class="game-keeper" id="gameKeeper"></div>
+          </div>
+
+          <!-- Game Controls -->
+          <div class="game-controls">
+            <button class="shoot-btn" id="shootBtn" onclick="shootBall()">
+              🏊 Tira!
+            </button>
+            <p style="margin-top: 15px; color: var(--text-secondary); font-size: 0.9em;">
+              Clicca o tieni premuto e poi rilascia per mirare e tirare!
+            </p>
+          </div>
+
+          <!-- Hidden Gallery (Revealed after 5 goals) -->
+          <div class="hidden-gallery" id="hiddenGallery">
+            <h3 class="gallery-title">🎉 Gallery Segreta Sbloccata! 🎉</h3>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 25px;">
+              Hai dimostrato la tua abilità! Ecco alcuni momenti esclusivi della squadra!
+            </p>
+            <div class="gallery-grid">
+              
+              <div class="gallery-item">
+                <div class="gallery-image">🏆</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Vittoria 2024</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">Championship Finals</div>
+                </div>
+              </div>
+
+              <div class="gallery-item">
+                <div class="gallery-image">🏅</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Trophy Case</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">Storica Collezione</div>
+                </div>
+              </div>
+
+              <div class="gallery-item">
+                <div class="gallery-image">⚽</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Match del Secolo</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">1998 Finals</div>
+                </div>
+              </div>
+
+              <div class="gallery-item">
+                <div class="gallery-image">🌊</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Training Session</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">Behind the Scenes</div>
+                </div>
+              </div>
+
+              <div class="gallery-item">
+                <div class="gallery-image">🏊</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Team 2025</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">Ultima Formazione</div>
+                </div>
+              </div>
+
+              <div class="gallery-item">
+                <div class="gallery-image">🎖️</div>
+                <div style="padding: 15px; text-align: center;">
+                  <div style="font-weight: 700; margin-bottom: 5px;">Hall of Fame</div>
+                  <div style="font-size: 0.85em; color: var(--text-secondary);">Leggende del Club</div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Sanremo Water Polo – Tutti i diritti riservati</p>
+    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.6;">Made with 💪 and 🏊</p>
+  </footer>
+
+  <!-- Easter Egg Hint -->
+  <div class="easter-egg-hint" title="Tip: Try typing something...">🎉</div>
+
+  <script>
+    /* ============================================================================
+       THEME SWITCHING LOGIC (consistent with other pages)
+       ============================================================================ */
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeButtons(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const theme = this.getAttribute('data-theme');
+        body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeButtons(theme);
+      });
+    });
+
+    function updateThemeButtons(activeTheme) {
+      themeButtons.forEach(btn => {
+        if (btn.getAttribute('data-theme') === activeTheme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    /* ============================================================================
+       NAVIGATION SCROLL EFFECTS
+       ============================================================================ */
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      if (currentScroll > lastScroll && currentScroll > 200) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    /* ============================================================================
+       CAROUSEL FUNCTIONALITY
+       ============================================================================ */
+    const carousel = document.getElementById('playersCarousel');
+    const scrollAmount = 320; // Width of card + gap
+
+    function scrollCarousel(direction) {
+      carousel.scrollBy({
+        left: direction * scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    carousel.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleSwipe();
+    });
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartX - touchEndX;
+      
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+          scrollCarousel(1); // Swipe left, move right
+        } else {
+          scrollCarousel(-1); // Swipe right, move left
+        }
+      }
+    }
+
+    // Auto-scroll carousel (optional)
+    let autoScrollInterval;
+    function startAutoScroll() {
+      autoScrollInterval = setInterval(() => {
+        if (carousel.scrollLeft + carousel.clientWidth >= carousel.scrollWidth - 50) {
+          carousel.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          scrollCarousel(1);
+        }
+      }, 5000);
+    }
+
+    // Pause on hover
+    carousel.addEventListener('mouseenter', () => {
+      clearInterval(autoScrollInterval);
+    });
+
+    carousel.addEventListener('mouseleave', () => {
+      startAutoScroll();
+    });
+
+    // Start auto-scroll
+    startAutoScroll();
+
+    /* ============================================================================
+       EASTER EGG: HALL OF FAME
+       ============================================================================ */
+    let typedText = '';
+    const targetText = 'GERBÒ';
+    
+    document.addEventListener('keydown', (e) => {
+      const key = e.key.toUpperCase();
+      
+      // Reset if wrong key
+      if (!targetText.includes(key)) {
+        typedText = '';
+        return;
+      }
+      
+      typedText += key;
+      
+      // Check if complete
+      if (typedText === targetText) {
+        typedText = '';
+        openHOF();
+      }
+      
+      // Keep last 6 characters
+      if (typedText.length > 6) {
+        typedText = typedText.slice(-6);
+      }
+    });
+
+    function openHOF() {
+      const modal = document.getElementById('hofModal');
+      modal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeHOF() {
+      const modal = document.getElementById('hofModal');
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+      // Reset game state
+      gameScore = 0;
+      gameAttempts = 0;
+      updateGameUI();
+    }
+
+    // Close modal on outside click
+    document.getElementById('hofModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeHOF();
+      }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeHOF();
+      }
+    });
+
+    /* ============================================================================
+       TAB SWITCHING FUNCTIONALITY
+       ============================================================================ */
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.hof-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.target.classList.add('active');
+
+      // Switch content sections
+      document.querySelectorAll('.hof-section').forEach(section => {
+        section.classList.remove('active');
+      });
+
+      if (tabName === 'fame') {
+        document.getElementById('hofFameSection').classList.add('active');
+      } else if (tabName === 'game') {
+        document.getElementById('hofGameSection').classList.add('active');
+        // Initialize game when switching to game tab
+        initGame();
+      }
+    }
+
+    /* ============================================================================
+       MINI-GAME: SHOOTING GAME LOGIC
+       ============================================================================ */
+    let gameScore = 0;
+    let gameAttempts = 0;
+    const REQUIRED_GOALS = 5;
+    let isShooting = false;
+
+    // Initialize game
+    function initGame() {
+      gameScore = 0;
+      gameAttempts = 0;
+      updateGameUI();
+      
+      // Draw canvas background
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Draw water gradient
+      const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+      gradient.addColorStop(0, '#006994');
+      gradient.addColorStop(1, '#004d6e');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, 600, 400);
+      
+      // Draw goal
+      drawGoal();
+      drawKeeper();
+    }
+
+    // Draw goal posts
+    function drawGoal() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const goalX = 300;
+      const goalY = 310;
+      const goalWidth = 200;
+      const goalHeight = 80;
+      
+      // Goal outline
+      ctx.strokeStyle = '#fff';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.arc(goalX, goalY + goalHeight, goalWidth / 2, 0, Math.PI);
+      ctx.stroke();
+      
+      // Goal posts
+      ctx.strokeRect(goalX - goalWidth / 2, goalY, 10, goalHeight);
+      ctx.strokeRect(goalX + goalWidth / 2 - 10, goalY, 10, goalHeight);
+      
+      // Goal net (decorative)
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < 10; i++) {
+        const x = goalX - goalWidth / 2 + (i * goalWidth / 10);
+        ctx.beginPath();
+        ctx.arc(x, goalY + goalHeight, 40, 0, Math.PI);
+        ctx.stroke();
+      }
+    }
+
+    // Draw goalkeeper
+    function drawKeeper() {
+      const canvas = document.getElementById('gameCanvas');
+      const ctx = canvas.getContext('2d');
+      const keeperX = 300;
+      const keeperY = 310;
+      
+      // Keeper body
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color');
+      ctx.beginPath();
+      ctx.arc(keeperX, keeperY + 40, 30, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Keeper legs
+      ctx.fillRect(keeperX - 20, keeperY + 60, 40, 20);
+    }
+
+    // Update game UI
+    function updateGameUI() {
+      document.getElementById('gameScore').textContent = `${gameScore} / ${REQUIRED_GOALS}`;
+      document.getElementById('gameAttempts').textContent = gameAttempts;
+      
+      // Check if gallery should be revealed
+      const hiddenGallery = document.getElementById('hiddenGallery');
+      if (gameScore >= REQUIRED_GOALS && !hiddenGallery.classList.contains('revealed')) {
+        hiddenGallery.classList.add('revealed');
+        // Scroll to gallery
+        setTimeout(() => {
+          hiddenGallery.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+      }
+    }
+
+    // Shoot ball animation
+    function shootBall() {
+      if (isShooting) return;
+      
+      isShooting = true;
+      gameAttempts++;
+      
+      const canvas = document.getElementById('gameCanvas');
+      const ball = document.createElement('div');
+      ball.className = 'ball';
+      ball.style.position = 'absolute';
+      ball.style.left = '50%';
+      ball.style.top = '20px';
+      ball.style.transform = 'translateX(-50%)';
+      
+      canvas.parentElement.appendChild(ball);
+      
+      // Random target (goal left, center, or right)
+      const targetX = 300 + (Math.random() - 0.5) * 150;
+      const targetY = 310;
+      
+      const animationDuration = 800;
+      const startTime = Date.now();
+      
+      function animate() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / animationDuration, 1);
+        
+        // Parabolic trajectory
+        const x = 300 + (targetX - 300) * progress;
+        const y = 20 + 290 * progress + 50 * Math.sin(progress * Math.PI);
+        
+        ball.style.left = x + 'px';
+        ball.style.top = y + 'px';
+        
+        if (progress < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          // Check if goal scored (within goal bounds)
+          const goalLeft = 200;
+          const goalRight = 400;
+          const goalTop = 310;
+          
+          if (targetX >= goalLeft && targetX <= goalRight) {
+            // GOAL! Add celebration
+            gameScore++;
+            showCelebration();
+            updateGameUI();
+          }
+          
+          ball.remove();
+          isShooting = false;
+        }
+      }
+      
+      animate();
+    }
+
+    // Show goal celebration
+    function showCelebration() {
+      const canvas = document.getElementById('gameCanvas');
+      const celebration = document.createElement('div');
+      celebration.className = 'goal-celebration';
+      celebration.textContent = '🎉 GOAL! 🎉';
+      canvas.parentElement.appendChild(celebration);
+      
+      setTimeout(() => celebration.remove(), 1000);
+    }
+
+    // Update on window resize
+    window.addEventListener('resize', () => {
+      if (document.getElementById('hofGameSection').classList.contains('active')) {
+        initGame();
+      }
+    });
+
+    /* ============================================================================
+       PERFORMANCE OPTIMIZATION
+       ============================================================================ */
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    /* ============================================================================
+       ACCESSIBILITY ENHANCEMENTS
+       ============================================================================ */
+    themeButtons.forEach(btn => {
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          btn.click();
+        }
+      });
+    });
+
+    console.log('%c Sanremo Water Polo - Squadra ', 'background: #ffd700; color: #000; font-size: 20px; font-weight: bold; padding: 10px;');
+    console.log('%c Easter Egg: Type "GERBÒ" to reveal Hall of Fame! ', 'color: #ffd700; font-size: 12px;');
+  </script>
+</body>
+</html>

@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sanremo Water Polo – Contatti</title>
+  
+  <!-- Leaflet for interactive map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e2mYv0y5m6QvDgG1qg4bVYBfKkJw2fXnfnwA0A2U=" crossorigin=""/>
+  
+  <style>
+    /* ============================================================================
+       CSS VARIABLES FOR THEME SWITCHING (consistent with other pages)
+       ============================================================================ */
+    :root {
+      /* Default Theme (Yellow/Black) */
+      --primary-bg: #000000;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #ffd700;
+      --text-primary: #ffffff;
+      --text-secondary: #cccccc;
+      --nav-bg: rgba(0, 0, 0, 0.85);
+      --card-bg: rgba(26, 26, 26, 0.9);
+      --shadow-color: rgba(255, 215, 0, 0.3);
+      --border-color: rgba(255, 215, 0, 0.5);
+      --gradient-1: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+      --gradient-2: linear-gradient(135deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+    }
+
+    /* Light Theme */
+    [data-theme="light"] {
+      --primary-bg: #f8f9fa;
+      --secondary-bg: #ffffff;
+      --accent-color: #ffd700;
+      --text-primary: #000000;
+      --text-secondary: #333333;
+      --nav-bg: rgba(248, 249, 250, 0.9);
+      --card-bg: rgba(255, 255, 255, 0.95);
+      --shadow-color: rgba(0, 0, 0, 0.1);
+      --border-color: rgba(255, 215, 0, 0.7);
+      --gradient-1: linear-gradient(135deg, #fff9e6 0%, #ffd700 100%);
+      --gradient-2: linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%);
+    }
+
+    /* Dark Theme */
+    [data-theme="dark"] {
+      --primary-bg: #0a0a0a;
+      --secondary-bg: #1a1a1a;
+      --accent-color: #00d4ff;
+      --text-primary: #ffffff;
+      --text-secondary: #b0b0b0;
+      --nav-bg: rgba(10, 10, 10, 0.92);
+      --card-bg: rgba(20, 20, 20, 0.95);
+      --shadow-color: rgba(0, 212, 255, 0.3);
+      --border-color: rgba(0, 212, 255, 0.5);
+      --gradient-1: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      --gradient-2: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+    }
+
+    /* Blue Theme */
+    [data-theme="blue"] {
+      --primary-bg: #001f3f;
+      --secondary-bg: #003366;
+      --accent-color: #00bfff;
+      --text-primary: #ffffff;
+      --text-secondary: #a0d0ff;
+      --nav-bg: rgba(0, 31, 63, 0.9);
+      --card-bg: rgba(0, 51, 102, 0.95);
+      --shadow-color: rgba(0, 191, 255, 0.4);
+      --border-color: rgba(0, 191, 255, 0.6);
+      --gradient-1: linear-gradient(135deg, #00bfff 0%, #005f8f 100%);
+      --gradient-2: linear-gradient(135deg, #001f3f 0%, #003366 50%, #001f3f 100%);
+    }
+
+    /* ============================================================================
+       GLOBAL RESET & BASE STYLES
+       ============================================================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary-bg);
+      color: var(--text-primary);
+      overflow-x: hidden;
+      transition: background-color 0.5s ease, color 0.5s ease;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ============================================================================
+       ANIMATED BACKGROUND WAVES
+       ============================================================================ */
+    .animated-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 200%;
+      height: 50%;
+      background: var(--gradient-1);
+      opacity: 0.05;
+      animation: waveAnimation 20s linear infinite;
+      transform: translateX(0);
+    }
+
+    .wave:nth-child(2) {
+      animation-duration: 15s;
+      animation-direction: reverse;
+      opacity: 0.03;
+    }
+
+    @keyframes waveAnimation {
+      0% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-10px); }
+      100% { transform: translateX(-50%) translateY(0); }
+    }
+
+    /* ============================================================================
+       THEME SWITCHER
+       ============================================================================ */
+    .theme-switcher {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1001;
+      background: var(--nav-bg);
+      padding: 10px;
+      border-radius: 25px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .theme-btn {
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .theme-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: currentColor;
+      transition: width 0.3s, height 0.3s;
+      transform: translate(-50%, -50%);
+    }
+
+    .theme-btn:hover::before {
+      width: 300%;
+      height: 300%;
+      transition: width 0.5s, height 0.5s;
+    }
+
+    .theme-btn.active {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px currentColor;
+    }
+
+    .theme-btn:nth-child(1) { background: #ffd700; }
+    .theme-btn:nth-child(2) { background: #f8f9fa; }
+    .theme-btn:nth-child(3) { background: #0a0a0a; }
+    .theme-btn:nth-child(4) { background: #001f3f; }
+
+    /* ============================================================================
+       NAVIGATION (FIXED & BLUR EFFECT)
+       ============================================================================ */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 15px 0;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    nav.scrolled {
+      padding: 10px 0;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    nav ul {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      list-style: none;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    nav ul li {
+      position: relative;
+    }
+
+    nav ul li a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1em;
+      padding: 8px 20px;
+      border-radius: 25px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+    }
+
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: 5px;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+
+    nav ul li a:hover::after {
+      width: 70%;
+    }
+
+    nav ul li a:hover {
+      color: var(--accent-color);
+      transform: translateY(-2px);
+      text-shadow: 0 0 10px var(--shadow-color);
+    }
+
+    nav ul li a.active {
+      background: var(--accent-color);
+      color: #000;
+    }
+
+    /* ============================================================================
+       HERO SECTION
+       ============================================================================ */
+    .hero {
+      position: relative;
+      height: 65vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+                  url("immaginis/piscina_Sanremo.png") no-repeat center/cover;
+      background-attachment: fixed;
+      margin-top: 60px;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-2);
+      opacity: 0.3;
+      animation: gradientShift 10s ease infinite;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 0.3; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      max-width: 90%;
+      animation: heroFadeIn 1.5s ease-out;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      background: var(--gradient-1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      animation: heroSlide 1s cubic-bezier(0.4, 0, 0.2, 1);
+      text-shadow: 0 0 30px var(--shadow-color);
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      font-weight: 300;
+      color: var(--text-secondary);
+      animation: heroFadeIn 1.8s ease-out;
+      letter-spacing: 1px;
+      max-width: 800px;
+      padding: 0 20px;
+    }
+
+    @keyframes heroSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes heroFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ============================================================================
+       SECTION STYLES
+       ============================================================================ */
+    .section {
+      padding: 80px 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 50px;
+      position: relative;
+      opacity: 0;
+      animation: fadeInUp 1s ease-out forwards;
+    }
+
+    .section-title::before,
+    .section-title::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 100px;
+      height: 2px;
+      background: var(--gradient-1);
+    }
+
+    .section-title::before {
+      left: -120px;
+    }
+
+    .section-title::after {
+      right: -120px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* ============================================================================
+       CONTACT CARDS GRID
+       ============================================================================ */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-bottom: 50px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+      border: 2px solid transparent;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(40px);
+      animation: cardSlideUp 0.8s ease-out forwards;
+    }
+
+    .card:nth-child(1) { animation-delay: 0.1s; }
+    .card:nth-child(2) { animation-delay: 0.2s; }
+    .card:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes cardSlideUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.02);
+      border-color: var(--accent-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--gradient-1);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 0.05;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .contact-info {
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .contact-icon {
+      min-width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      flex-shrink: 0;
+      box-shadow: 0 4px 15px var(--shadow-color);
+      transition: transform 0.3s ease;
+    }
+
+    .contact-info:hover .contact-icon {
+      transform: scale(1.1) rotate(5deg);
+    }
+
+    .contact-details h3 {
+      color: var(--accent-color);
+      font-size: 1.1em;
+      margin-bottom: 5px;
+      font-weight: 700;
+    }
+
+    .contact-details p {
+      color: var(--text-secondary);
+      font-size: 0.95em;
+      line-height: 1.6;
+    }
+
+    /* ============================================================================
+       SOCIAL LINKS
+       ============================================================================ */
+    .social-links {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--accent-color);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9em;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+    }
+
+    .social-link:hover {
+      background: var(--accent-color);
+      color: #000;
+      transform: translateY(-5px) scale(1.1);
+      box-shadow: 0 6px 25px var(--shadow-color);
+      border-color: var(--accent-color);
+    }
+
+    /* ============================================================================
+       TRAINING SCHEDULE
+       ============================================================================ */
+    .schedule {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .day-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(90deg, rgba(255, 215, 0, 0.05), rgba(255, 155, 0, 0.02));
+      padding: 15px 20px;
+      border-radius: 15px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 2px solid transparent;
+      position: relative;
+    }
+
+    .day-card:hover {
+      transform: translateY(-5px) scale(1.02);
+      background: linear-gradient(90deg, rgba(255, 215, 0, 0.1), rgba(255, 155, 0, 0.05));
+      border-color: var(--accent-color);
+      box-shadow: 0 8px 25px var(--shadow-color);
+    }
+
+    .day-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .day-icon {
+      width: 45px;
+      height: 45px;
+      border-radius: 12px;
+      background: var(--gradient-1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5em;
+      box-shadow: 0 4px 15px var(--shadow-color);
+    }
+
+    .day-name {
+      color: var(--text-primary);
+      font-weight: 700;
+      font-size: 1.1em;
+    }
+
+    .day-time {
+      color: var(--accent-color);
+      font-weight: 800;
+      font-size: 1.1em;
+    }
+
+    /* ============================================================================
+       MAP SECTION
+       ============================================================================ */
+    #map {
+      height: 400px !important;
+      width: 100% !important;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 3px solid var(--border-color);
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+      position: relative;
+      transition: transform 0.3s ease;
+      background: var(--secondary-bg);
+      z-index: 1;
+    }
+
+    #map.loading::before {
+      content: '🗺️ Loading map...';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--text-secondary);
+      font-size: 1.2em;
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    #map:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 60px var(--shadow-color);
+    }
+
+    /* ============================================================================
+       CONTACT FORM
+       ============================================================================ */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .form-group {
+      position: relative;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 15px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 15px;
+      color: var(--text-primary);
+      font-size: 1em;
+      font-family: inherit;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input::placeholder,
+    .form-group textarea::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent-color);
+      background: rgba(255, 255, 255, 0.08);
+      box-shadow: 0 0 20px var(--shadow-color);
+    }
+
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      background: var(--gradient-1);
+      color: #000;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 30px;
+      font-weight: 800;
+      font-size: 1.1em;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      align-self: flex-end;
+      position: relative;
+      overflow: hidden;
+      border: 3px solid transparent;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 10px 35px var(--shadow-color);
+      border-color: var(--accent-color);
+    }
+
+    .submit-btn:active:not(:disabled) {
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* ============================================================================
+       MODAL POPUP
+       ============================================================================ */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal {
+      background: var(--card-bg);
+      border-radius: 25px;
+      max-width: 500px;
+      width: 100%;
+      padding: 40px;
+      position: relative;
+      border: 3px solid var(--accent-color);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+      animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: var(--accent-color);
+      color: #000;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-weight: 900;
+    }
+
+    .modal-close:hover {
+      transform: rotate(90deg) scale(1.15);
+      box-shadow: 0 0 25px var(--shadow-color);
+      background: #ffed4e;
+    }
+
+    .modal h3 {
+      color: var(--accent-color);
+      font-size: 1.8em;
+      margin-bottom: 15px;
+      font-weight: 900;
+    }
+
+    .modal p {
+      color: var(--text-secondary);
+      font-size: 1.1em;
+      line-height: 1.8;
+    }
+
+    /* ============================================================================
+       EASTER EGG BALL
+       ============================================================================ */
+    .easter-ball {
+      position: fixed;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #dcdcdc 18%, #ffd700 40%, #ff9b00 60%);
+      z-index: 5000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+    }
+
+    .easter-ball::before {
+      content: '🏊';
+      font-size: 2em;
+    }
+
+    /* ============================================================================
+       FOOTER
+       ============================================================================ */
+    footer {
+      background: var(--secondary-bg);
+      color: var(--text-primary);
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--gradient-1);
+      animation: shimmer 2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    footer p {
+      font-size: 1.1em;
+      opacity: 0.8;
+      margin: 5px 0;
+    }
+
+    /* ============================================================================
+       RESPONSIVE DESIGN
+       ============================================================================ */
+    @media (max-width: 1024px) {
+      .section-title::before,
+      .section-title::after {
+        width: 50px;
+      }
+
+      .section-title::before {
+        left: -60px;
+      }
+
+      .section-title::after {
+        right: -60px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .theme-switcher {
+        top: 65px;
+        right: 10px;
+        padding: 8px;
+        gap: 8px;
+      }
+
+      .theme-btn {
+        width: 35px;
+        height: 35px;
+      }
+
+      .hero {
+        height: 50vh;
+        margin-top: 60px;
+      }
+
+      .contact-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+
+      .section-title::before,
+      .section-title::after {
+        display: none;
+      }
+
+      .card {
+        padding: 25px;
+      }
+
+      #map {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .theme-switcher {
+        flex-direction: column;
+        top: 60px;
+        right: 5px;
+      }
+
+      .hero {
+        height: 45vh;
+      }
+
+      .modal {
+        padding: 25px;
+      }
+
+      .modal h3 {
+        font-size: 1.4em;
+      }
+    }
+  </style>
+
+  <!-- Leaflet script -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-o9N1j8g+7HqgZk9gKQfKqE+Q5wQZe3p1RRXg3jv+3oM=" crossorigin=""></script>
+</head>
+<body data-theme="default">
+  
+  <!-- Animated background waves -->
+  <div class="animated-bg">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Theme Switcher -->
+  <div class="theme-switcher">
+    <button class="theme-btn active" data-theme="default" title="Yellow/Black Theme" aria-label="Yellow theme"></button>
+    <button class="theme-btn" data-theme="light" title="Light Theme" aria-label="Light theme"></button>
+    <button class="theme-btn" data-theme="dark" title="Dark Theme" aria-label="Dark theme"></button>
+    <button class="theme-btn" data-theme="blue" title="Blue Theme" aria-label="Blue theme"></button>
+  </div>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="squadra.html">Squadra</a></li>
+      <li><a href="partite.html">Partite</a></li>
+      <li><a href="news.html">News</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="contatti.html" class="active">Contatti</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Contatti</h1>
+      <p>Contattaci per informazioni, iscrizioni o segreteria. Siamo qui per te!</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="section">
+    <h2 class="section-title">Informazioni e Contatti</h2>
+    
+    <div class="contact-grid">
+      <!-- Contact Info Card -->
+      <div class="card">
+        <div class="card-content">
+          <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em;">Contatti Principali</h3>
+          
+          <div class="contact-info">
+            <div class="contact-icon">✉️</div>
+            <div class="contact-details">
+              <h3>Email</h3>
+              <p>info@sanremowp.it</p>
+            </div>
+          </div>
+
+          <div class="contact-info">
+            <div class="contact-icon">📞</div>
+            <div class="contact-details">
+              <h3>Telefono</h3>
+              <p>0184 991350</p>
+            </div>
+          </div>
+
+    <div class="contact-info">
+            <div class="contact-icon">📍</div>
+            <div class="contact-details">
+              <h3>Indirizzo</h3>
+              <p>Centro Natatorio Comunale di Sanremo<br>Via Nostra Signora della Mercede</p>
+            </div>
+          </div>
+
+          <div style="margin-top: 30px;">
+            <h4 style="color: var(--accent-color); margin-bottom: 15px; font-size: 1.2em;">Social Media</h4>
+            <div class="social-links">
+              <a href="#" class="social-link" title="Instagram">IG</a>
+              <a href="#" class="social-link" title="Facebook">FB</a>
+              <a href="#" class="social-link" title="YouTube">YT</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Training Schedule Card -->
+      <div class="card">
+        <div class="card-content">
+          <h3 style="color: var(--accent-color); margin-bottom: 20px; font-size: 1.5em;">Orari Allenamenti</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 20px;">I nostri allenamenti settimanali</p>
+          
+          <div class="schedule">
+            <div class="day-card">
+              <div class="day-left">
+                <div class="day-icon">🏊</div>
+                <div class="day-name">Lunedì</div>
+              </div>
+              <div class="day-time">15:00 — 16:30</div>
+            </div>
+            <div class="day-card">
+              <div class="day-left">
+                <div class="day-icon">🏊</div>
+                <div class="day-name">Martedì</div>
+              </div>
+              <div class="day-time">20:00 — 21:30</div>
+            </div>
+            <div class="day-card">
+              <div class="day-left">
+                <div class="day-icon">🏊</div>
+                <div class="day-name">Mercoledì</div>
+              </div>
+              <div class="day-time">17:30 — 19:00</div>
+            </div>
+            <div class="day-card">
+              <div class="day-left">
+                <div class="day-icon">🏊</div>
+                <div class="day-name">Giovedì</div>
+              </div>
+              <div class="day-time">20:00 — 21:30</div>
+            </div>
+            <div class="day-card">
+              <div class="day-left">
+                <div class="day-icon">🏊</div>
+                <div class="day-name">Venerdì</div>
+              </div>
+              <div class="day-time">18:15 — 19:30</div>
+      </div>
+    </div>
+
+          <div style="margin-top: 25px; padding: 15px; background: rgba(255, 215, 0, 0.1); border-radius: 12px; border-left: 4px solid var(--accent-color);">
+            <p style="color: var(--text-primary); font-size: 0.95em; line-height: 1.6;">
+              <strong style="color: var(--accent-color);">Orari Segreteria:</strong><br>
+              Lun-Ven: 9:00 - 12:00 / 15:00 - 18:00
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Map Section -->
+  <section class="section">
+    <h2 class="section-title">Dove Siamo</h2>
+    
+    <div class="card">
+      <div class="card-content">
+        <div id="map" class="loading"></div>
+        <p style="margin-top: 15px; color: var(--text-secondary); text-align: center; font-size: 0.95em;">
+          Centro Natatorio Comunale di Sanremo — Via Nostra Signora della Mercede
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section class="section">
+    <h2 class="section-title">Scrivici</h2>
+    
+    <div class="card">
+      <div class="card-content">
+        <h3 style="color: var(--accent-color); margin-bottom: 10px; font-size: 1.5em;">Invia un Messaggio</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 25px;">Compila il form e ti risponderemo il prima possibile.</p>
+        
+        <form id="contactForm" class="contact-form" novalidate>
+          <div class="form-group">
+            <input type="text" id="name" placeholder="Nome e Cognome" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" placeholder="Email" required>
+          </div>
+          <div class="form-group">
+            <textarea id="message" placeholder="Messaggio..." required></textarea>
+          </div>
+          <button type="button" class="submit-btn" id="submitBtn">
+            Invia Messaggio
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Sanremo Water Polo – Tutti i diritti riservati</p>
+    <p style="margin-top: 10px; font-size: 0.9em; opacity: 0.6;">Made with 💪 and 🏊</p>
+  </footer>
+
+  <!-- Modal Popup -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>Messaggio Inviato!</h3>
+      <p>Grazie per averci contattato! Abbiamo ricevuto il tuo messaggio e ti risponderemo il prima possibile.</p>
+    </div>
+  </div>
+
+  <!-- Easter Egg Ball -->
+  <div class="easter-ball" id="easterBall"></div>
+
+  <script>
+    /* ============================================================================
+       THEME SWITCHING LOGIC
+       ============================================================================ */
+    const themeButtons = document.querySelectorAll('.theme-btn');
+    const body = document.body;
+
+    const savedTheme = localStorage.getItem('theme') || 'default';
+    body.setAttribute('data-theme', savedTheme);
+    updateThemeButtons(savedTheme);
+
+    themeButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const theme = this.getAttribute('data-theme');
+        body.setAttribute('data-theme', theme);
+        localStorage.setItem('theme', theme);
+        updateThemeButtons(theme);
+      });
+    });
+
+    function updateThemeButtons(activeTheme) {
+      themeButtons.forEach(btn => {
+        if (btn.getAttribute('data-theme') === activeTheme) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    /* ============================================================================
+       NAVIGATION SCROLL EFFECTS
+       ============================================================================ */
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.pageYOffset;
+      
+      if (currentScroll > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+      
+      if (currentScroll > lastScroll && currentScroll > 200) {
+        navbar.style.transform = 'translateY(-100%)';
+      } else {
+        navbar.style.transform = 'translateY(0)';
+      }
+      
+      lastScroll = currentScroll;
+    });
+
+    /* ============================================================================
+       MAP (Leaflet) INITIALIZATION
+       ============================================================================ */
+    function initializeMap() {
+      // Wait for Leaflet to be available
+      if (typeof L === 'undefined') {
+        console.error('Leaflet library not loaded');
+        return;
+      }
+
+      const LAT = 43.8215195234721;
+      const LNG = 7.7962973023031825;
+
+      // Check if map container exists
+      const mapContainer = document.getElementById('map');
+      if (!mapContainer) {
+        console.error('Map container not found');
+        return;
+      }
+
+      // Remove loading class
+      mapContainer.classList.remove('loading');
+
+      try {
+        // Initialize map
+        const map = L.map('map', {
+          center: [LAT, LNG],
+          zoom: 16,
+          zoomControl: true,
+          dragging: false,
+          doubleClickZoom: false,
+          boxZoom: false,
+          keyboard: false,
+          tap: false,
+          touchZoom: true,
+          scrollWheelZoom: true
+        });
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add marker
+        const marker = L.marker([LAT, LNG]).addTo(map);
+        marker.bindPopup('<strong>Centro Natatorio Comunale di Sanremo</strong><br>Via Nostra Signora della Mercede').openPopup();
+        
+        // Ensure map renders properly
+        map.once('load', function() {
+          map.invalidateSize();
+        });
+        
+        // Invalidate size after a short delay to ensure proper rendering
+        setTimeout(function() {
+          map.invalidateSize();
+        }, 100);
+        
+        console.log('Map initialized successfully');
+      } catch (error) {
+        console.error('Error initializing map:', error);
+      }
+    }
+
+    // Initialize map when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initializeMap);
+    } else {
+      // DOM is already loaded, run immediately
+      setTimeout(initializeMap, 100);
+    }
+
+    /* ============================================================================
+       CONTACT FORM HANDLING
+       ============================================================================ */
+    const submitBtn = document.getElementById('submitBtn');
+    const modalOverlay = document.getElementById('modalOverlay');
+
+    function validateEmail(email) {
+      return /\S+@\S+\.\S+/.test(email);
+    }
+
+    submitBtn.addEventListener('click', function() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const message = document.getElementById('message').value.trim();
+
+      if (!name || !email || !message) {
+        alert('Per favore compila tutti i campi.');
+        return;
+      }
+      if (!validateEmail(email)) {
+        alert('Inserisci una email valida.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Invio...';
+
+      setTimeout(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Invia Messaggio';
+        modalOverlay.classList.add('active');
+        document.getElementById('contactForm').reset();
+      }, 1000);
+    });
+
+    function closeModal() {
+      modalOverlay.classList.remove('active');
+    }
+
+    modalOverlay.addEventListener('click', function(e) {
+      if (e.target === modalOverlay) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    /* ============================================================================
+       EASTER EGG: BALL BOUNCES AFTER 3 CLICKS ON NAV
+       ============================================================================ */
+    let clickCount = 0;
+    let clickTimer = null;
+    const nav = document.getElementById('navbar');
+    const ball = document.getElementById('easterBall');
+
+    nav.addEventListener('click', function(e) {
+      if (e.target.tagName === 'A') {
+        clickCount++;
+        if (clickTimer) clearTimeout(clickTimer);
+        clickTimer = setTimeout(() => { clickCount = 0; }, 1200);
+
+        if (clickCount >= 3) {
+          clickCount = 0;
+          showBall();
+        }
+      }
+    });
+
+    function showBall() {
+      ball.style.display = 'flex';
+      ball.style.left = '50%';
+      ball.style.top = '40%';
+      
+      ball.animate([
+        { transform: 'translate(-50%, -50%) translateY(0) rotate(0deg)' },
+        { transform: 'translate(-50%, -50%) translateY(-220px) rotate(180deg)' },
+        { transform: 'translate(-50%, -50%) translateY(0) rotate(360deg)' },
+        { transform: 'translate(-50%, -50%) translateY(-120px) rotate(540deg)' },
+        { transform: 'translate(-50%, -50%) translateY(0) rotate(720deg)' }
+      ], { 
+        duration: 1600, 
+        easing: 'cubic-bezier(.25,.8,.25,1)' 
+      });
+
+      setTimeout(() => {
+        ball.style.display = 'none';
+      }, 1700);
+    }
+
+    /* ============================================================================
+       PERFORMANCE OPTIMIZATION
+       ============================================================================ */
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    console.log('%c Sanremo Water Polo - Contatti ', 'background: #ffd700; color: #000; font-size: 20px; font-weight: bold; padding: 10px;');
+    console.log('%c Easter Egg: Click the nav 3 times quickly! ', 'color: #ffd700; font-size: 12px;');
+  </script>
+</body>
+</html>
