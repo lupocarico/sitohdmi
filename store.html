@@ -1250,16 +1250,16 @@
                 progressFill.style.width = progress + '%';
                 
                 if (progress >= 50) {
-                    progressText.textContent = 'Processing payment...';
+                    progressText.textContent = 'inizializzando il pagamento🤑...';
                 }
                 if (progress >= 80) {
-                    progressText.textContent = 'Preparing your order...';
+                    progressText.textContent = 'preparando la multa e l ordine...';
                 }
 
                 if (progress >= 100) {
                     clearInterval(interval);
                     setTimeout(() => {
-                        progressText.textContent = '✅ Your order will arrive soon!';
+                        progressText.textContent = '✅ Il tuo ordine arriverà al più presto!';
                         setTimeout(() => {
                             closeCheckout();
                             state.cart = [];
