@@ -607,8 +607,7 @@
     }
 
     #map.loading::before {
-      <iframe src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed" title="description"></iframe>;
-    
+      content: '🗺️ Loading map...';
       position: absolute;
       top: 50%;
       left: 50%;
@@ -923,8 +922,8 @@
   </style>
 
   <!-- Leaflet script -->
-  <script src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed"
-    integrity="sha256-o9N1j8g+7HqgZk9gKQfKqE+Q5wQZe3p1RRXg3jv+3oM=" crossorigin=""></script>
+  <iframe src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed"
+    integrity="sha256-o9N1j8g+7HqgZk9gKQfKqE+Q5wQZe3p1RRXg3jv+3oM=" crossorigin=""></iframe>
 </head>
 <body data-theme="default">
   
@@ -1180,9 +1179,8 @@
        ============================================================================ */
     function initializeMap() {
       // Wait for Leaflet to be available
-      if (typeof L === 'undefined') {
-        console.error('Leaflet library not loaded');
-        return;
+       <iframe src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed" title="description"></iframe>;
+     
       }
 
       const LAT = 43.8215195234721;
