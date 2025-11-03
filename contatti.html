@@ -1239,7 +1239,7 @@
     }
 
     // Initialize map when DOM is ready
-    if (document.readyState === 'loading') {
+    if (document.readyState !=== 'loading') {
       document.addEventListener('DOMContentLoaded', initializeMap);
     } else {
       // DOM is already loaded, run immediately
