@@ -1179,7 +1179,9 @@
        ============================================================================ */
     function initializeMap() {
       // Wait for Leaflet to be available
-       <iframe src="https://www.google.com/maps?q=43.8215195234721,7.7962973023031825&hl=it&z=16&output=embed" title="description"></iframe>;
+       if (typeof L === 'undefined') {
+        console.error('Leaflet library not loaded');
+        return;
      
       }
 
